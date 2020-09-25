@@ -2,15 +2,15 @@
   <v-app id="inspire">
     <v-container>
       <v-card-title>
-        Пользователи
+        Услуги
         <v-spacer></v-spacer>
-        <v-btn class="ma-2" outlined color="blue" @click="getUsers()"
-          >Загрузить список пользователей</v-btn
+        <v-btn class="ma-2" outlined color="blue" @click="getServices()"
+          >Список услуг</v-btn
         >
       </v-card-title>
       <v-data-table
         :headers="headers"
-        :items="users"
+        :items="services"
         class="elevation-1"
         :loading="loading"
         hide-default-footer
@@ -24,23 +24,25 @@ export default {
   data() {
     return {
       loading: false,
-      users: [],
+      services: [],
       headers: [
-        { text: "Фамилия", align: "center", value: "lastName" },
-        { text: "Имя", align: "center", value: "firstName" },
-        { text: "Отчество", align: "center", value: "patronymic" },
-        { text: "Номер телефона", align: "center", value: "phone" },
-        { text: "Email", align: "center", value: "email" },
+        { text: "ID", align: "center", value: "id", sortable: false },
+        {
+          text: "Название услуги",
+          align: "center",
+          value: "name",
+          sortable: false,
+        },
       ],
     };
   },
   computed: {},
   methods: {
-    getUsers: async function() {
+    getServices: async function() {
       this.loading = true;
-      const url = "http://localhost:8080/users";
+      const url = "http://localhost:8080/services";
       const token = JSON.parse(localStorage.getItem("token"));
-      async function usersData(url) {
+      async function services(url) {
         const response = await fetch(url, {
           method: "GET",
           headers: {
@@ -49,9 +51,9 @@ export default {
         });
         return await response.json();
       }
-      usersData(url).then((res) => {
+      services(url).then((res) => {
         if (Array.isArray(res)) {
-          this.users = res;
+          this.services = res;
         } else {
           console.log(res);
         }
@@ -61,3 +63,10 @@ export default {
   },
 };
 </script>
+<style scoped>
+.v-data-table,
+.v-card__title {
+  max-width: 600px;
+  margin: 0 auto;
+}
+</style>

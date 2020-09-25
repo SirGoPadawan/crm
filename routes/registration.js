@@ -4,16 +4,13 @@ const UserExistsException = require("../exception/UserExistsException");
 const express = require("express");
 const router = express.Router();
 const mysql = require("mysql");
-const bcrypt = require("bcrypt");
 
+const bcrypt = require("bcrypt");
 const salt = bcrypt.genSaltSync(10);
 
-const pool = mysql.createPool({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "sui",
-});
+const config = require("../configServer.json");
+
+const pool = mysql.createPool(config.database);
 
 router.post("/", function(req, res, next) {
   pool.query(`SELECT * FROM users WHERE phone = '${req.body.phone}'`, function(
@@ -46,7 +43,6 @@ router.post("/", function(req, res, next) {
         throw new UserExistsException();
       }
     } catch (e) {
-      console.log(e.status);
       res.status(e.status).json(e);
     }
   });
