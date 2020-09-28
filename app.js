@@ -7,9 +7,11 @@ const registrationRouter = require("./routes/registration");
 const usersRouter = require("./routes/users");
 const servicesRouter = require("./routes/services");
 const loginRouter = require("./routes/login");
+const uploadImgRouter = require("./routes/uploadimg");
 
 const app = express();
 app.use(cors());
+
 app.use(bodyParser.json());
 app.use(helmet());
 
@@ -19,6 +21,7 @@ app.use("/registration", registrationRouter);
 app.use("/users", usersRouter);
 app.use("/services", servicesRouter);
 app.use("/login", loginRouter);
+app.use("/uploadimg", uploadImgRouter);
 
 app.listen(app.get("port"), function() {
   console.log("CORS-enabled web server listening on port 8080");
