@@ -4,9 +4,7 @@
       <v-data-table :headers="headers" :items="services" class="elevation-1">
         <template v-slot:top>
           <v-toolbar flat>
-            <v-toolbar-title>
-              Услуги
-            </v-toolbar-title>
+            <v-toolbar-title> Услуги </v-toolbar-title>
             <v-spacer></v-spacer>
             <v-dialog v-model="dialog" max-width="500px">
               <template v-slot:activator="{ on, attrs }">
@@ -47,15 +45,14 @@
           <v-icon small class="mr-2" @click="editService(item)">
             mdi-pencil
           </v-icon>
-          <v-icon small @click="deleteService(item)">
-            mdi-delete
-          </v-icon>
+          <v-icon small @click="deleteService(item)"> mdi-delete </v-icon>
         </template>
       </v-data-table>
     </v-container>
   </v-app>
 </template>
 <script>
+import Api from "../Api";
 export default {
   data() {
     return {
@@ -97,10 +94,8 @@ export default {
     },
   },
   mounted() {
-    const url = "http://localhost:8080/services";
-    const token = JSON.parse(localStorage.getItem("token"));
-    this.getServices(url, token)
-      .then((res) => res.json())
+    new Api()
+      .fetch("http://localhost:8080/services")
       .then((res) => {
         if (Array.isArray(res)) {
           this.services = res;
@@ -111,12 +106,18 @@ export default {
       .catch((e) => console.log(e));
   },
   methods: {
-    getServices(url, token) {
-      return fetch(url, {
-        headers: {
-          Authentication: token.token,
-        },
-      });
+    fetchData(value, method) {
+      const params = {
+        method: method,
+        body: JSON.stringify(value),
+      };
+      return new Api().fetch("http://localhost:8080/services", params);
+    },
+    deleteService(item) {
+      const index = this.services.indexOf(item);
+      confirm("Are you sure you want to delete this item?") &&
+        this.services.splice(index, 1);
+      this.fetchData(item, "DELETE").then((res) => console.log(res));
     },
     showModal() {
       this.dialog = true;
@@ -125,23 +126,6 @@ export default {
       this.editedIndex = this.services.indexOf(item);
       this.editedItem = { ...item };
       this.dialog = true;
-    },
-    deleteService(item) {
-      const index = this.services.indexOf(item);
-      confirm("Are you sure you want to delete this item?") &&
-        this.services.splice(index, 1);
-      const url = "http://localhost:8080/services";
-      const token = JSON.parse(localStorage.getItem("token"));
-      fetch(url, {
-        method: "DELETE",
-        body: JSON.stringify(item),
-        headers: {
-          Authentication: token.token,
-          "Content-Type": "application/json",
-        },
-      })
-        .then((res) => res.json())
-        .then((res) => console.log(res));
     },
     close() {
       this.dialog = false;
@@ -153,31 +137,11 @@ export default {
     save() {
       if (this.editedIndex > -1) {
         Object.assign(this.services[this.editedIndex], this.editedItem);
-        const url = "http://localhost:8080/services";
-        const token = JSON.parse(localStorage.getItem("token"));
-        fetch(url, {
-          method: "PUT",
-          body: JSON.stringify(this.editedItem),
-          headers: {
-            Authentication: token.token,
-            "Content-Type": "application/json",
-          },
-        })
-          .then((response) => response.json())
-          .then((res) => console.log(res));
+        this.fetchData(this.editedItem, "PUT").then((res) => console.log(res));
       } else {
-        const url = "http://localhost:8080/services";
-        const token = JSON.parse(localStorage.getItem("token"));
-        fetch(url, {
-          method: "POST",
-          body: JSON.stringify(this.editedItem),
-          headers: {
-            Authentication: token.token,
-            "Content-Type": "application/json",
-          },
-        })
-          .then((res) => res.json())
-          .then((res) => (this.services = res));
+        this.fetchData(this.editedItem, "POST").then(
+          (res) => (this.services = res)
+        );
       }
       this.close();
     },

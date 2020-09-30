@@ -13,13 +13,13 @@
         :items="users"
         class="elevation-1"
         :loading="loading"
-        hide-default-footer
       >
       </v-data-table>
     </v-container>
   </v-app>
 </template>
 <script>
+import Api from "../Api";
 export default {
   data() {
     return {
@@ -38,22 +38,13 @@ export default {
   methods: {
     getUsers() {
       this.loading = true;
-      const url = "http://localhost:8080/users";
-      const token = JSON.parse(localStorage.getItem("token"));
-      fetch(url, {
-        method: "GET",
-        headers: {
-          Authentication: token.token,
-        },
-      })
-        .then((res) => res.json())
-        .then((res) => {
-          if (Array.isArray(res)) {
-            this.users = res;
-          } else {
-            console.log(res);
-          }
-        });
+      new Api().fetch("http://localhost:8080/users").then((res) => {
+        if (Array.isArray(res)) {
+          this.users = res;
+        } else {
+          console.log(res);
+        }
+      });
       this.loading = false;
     },
   },

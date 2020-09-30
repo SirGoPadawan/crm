@@ -36,6 +36,7 @@
   </v-app>
 </template>
 <script>
+import Api from "../Api";
 export default {
   data() {
     return {
@@ -59,20 +60,16 @@ export default {
       this.$router.push("registration");
     },
     singIn() {
-      const loginUser = {
-        phone: this.phone,
-        password: this.password,
-      };
-      const url = "http://localhost:8080/login";
-      fetch(url, {
+      const params = {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(loginUser),
-      })
-        .then((res) => res.json())
-        .then((res) => {
-          console.log(res), localStorage.setItem("token", JSON.stringify(res));
-        });
+        body: JSON.stringify({
+          phone: this.phone,
+          password: this.password,
+        }),
+      };
+      new Api().fetch("http://localhost:8080/login", params).then((res) => {
+        console.log(res), localStorage.setItem("token", JSON.stringify(res));
+      });
     },
   },
 };

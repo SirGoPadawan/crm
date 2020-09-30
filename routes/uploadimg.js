@@ -17,6 +17,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 router.post("/", upload.any(), function(req, res, next) {
+  console.log(req);
   pool.query(
     `UPDATE users SET img = "${"uploads/" +
       req.files[0].filename}" WHERE phone="${req.body.userPhone}"`

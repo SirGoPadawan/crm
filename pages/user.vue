@@ -28,6 +28,7 @@
   </v-app>
 </template>
 <script>
+import Api from "../Api";
 export default {
   data() {
     return {
@@ -40,20 +41,15 @@ export default {
     },
     uploadImg() {
       if (this.file) {
-        const url = "http://localhost:8080/uploadimg";
-        const token = JSON.parse(localStorage.getItem("token"));
         let formData = new FormData();
         formData.append("image", this.file);
         formData.append("userPhone", "89999999989");
-        fetch(url, {
+        const params = {
           method: "POST",
           body: formData,
-          headers: {
-            Authentication: token.token,
-          },
-          content: "89999999989",
-        })
-          .then((res) => res.json())
+        };
+        new Api({})
+          .fetch("http://localhost:8080/uploadimg", params)
           .then((res) => console.log(res));
         this.file = null;
       } else {

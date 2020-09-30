@@ -57,6 +57,7 @@
   </v-app>
 </template>
 <script>
+import Api from "../Api";
 export default {
   data() {
     return {
@@ -90,23 +91,21 @@ export default {
     goToLogin() {
       this.$router.push("login");
     },
+
     regUser() {
-      //try catch
-      const newUser = {
-        firstname: this.firstname,
-        lastname: this.lastname,
-        patronymic: this.patronymic,
-        email: this.email,
-        phone: this.phone,
-        password: this.password,
-      };
-      const url = "http://localhost:8080/registration";
-      fetch(url, {
+      const params = {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newUser),
-      })
-        .then((res) => res.json())
+        body: JSON.stringify({
+          firstname: this.firstname,
+          lastname: this.lastname,
+          patronymic: this.patronymic,
+          email: this.email,
+          phone: this.phone,
+          password: this.password,
+        }),
+      };
+      new Api()
+        .fetch("http://localhost:8080/registration", params)
         .then((res) => console.log(res));
     },
   },
