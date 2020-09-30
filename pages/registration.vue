@@ -87,10 +87,10 @@ export default {
     },
   },
   methods: {
-    goToLogin: function() {
+    goToLogin() {
       this.$router.push("login");
     },
-    regUser: function() {
+    regUser() {
       //try catch
       const newUser = {
         firstname: this.firstname,
@@ -101,17 +101,13 @@ export default {
         password: this.password,
       };
       const url = "http://localhost:8080/registration";
-      async function userData(url = "", data = {}) {
-        const response = await fetch(url, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data),
-        });
-        return await response.json();
-      }
-      userData(url, newUser).then((data) => {
-        console.log(data);
-      });
+      fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newUser),
+      })
+        .then((res) => res.json())
+        .then((res) => console.log(res));
     },
   },
 };

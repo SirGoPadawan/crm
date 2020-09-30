@@ -1,20 +1,56 @@
 <template>
   <v-app id="inspire">
     <v-container>
-      <v-card-title>
-        Услуги
-        <v-spacer></v-spacer>
-        <v-btn class="ma-2" outlined color="blue" @click="getServices()"
-          >Список услуг</v-btn
-        >
-      </v-card-title>
-      <v-data-table
-        :headers="headers"
-        :items="services"
-        class="elevation-1"
-        :loading="loading"
-        hide-default-footer
-      >
+      <v-data-table :headers="headers" :items="services" class="elevation-1">
+        <template v-slot:top>
+          <v-toolbar flat>
+            <v-toolbar-title>
+              Услуги
+            </v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-dialog v-model="dialog" max-width="500px">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn color="primary" dark v-bind="attrs" v-on="on">
+                  Новая услуга
+                </v-btn>
+              </template>
+              <v-card>
+                <v-card-title>
+                  <span class="headline">{{ formTitle }}</span>
+                </v-card-title>
+                <v-card-text>
+                  <v-container>
+                    <v-row>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-text-field
+                          v-model="editedItem.name"
+                          label="Услуга"
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn color="blue darken-1" text @click="close()">
+                    Отмена
+                  </v-btn>
+                  <v-btn color="blue darken-1" text @click="save()">
+                    Сохранить
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+          </v-toolbar>
+        </template>
+        <template v-slot:[`item.actions`]="{ item }">
+          <v-icon small class="mr-2" @click="editService(item)">
+            mdi-pencil
+          </v-icon>
+          <v-icon small @click="deleteService(item)">
+            mdi-delete
+          </v-icon>
+        </template>
       </v-data-table>
     </v-container>
   </v-app>
@@ -23,42 +59,127 @@
 export default {
   data() {
     return {
-      loading: false,
       services: [],
       headers: [
-        { text: "ID", align: "center", value: "id", sortable: false },
         {
           text: "Название услуги",
           align: "center",
           value: "name",
           sortable: false,
         },
+        {
+          text: "Действия с услугами",
+          align: "center",
+          value: "actions",
+          sortable: false,
+        },
       ],
+      editedIndex: -1,
+      editedItem: {
+        name: "",
+        ID: 0,
+      },
+      defaultItem: {
+        name: "",
+        ID: 0,
+      },
+      dialog: false,
     };
   },
-  computed: {},
-  methods: {
-    getServices: async function() {
-      this.loading = true;
-      const url = "http://localhost:8080/services";
-      const token = JSON.parse(localStorage.getItem("token"));
-      async function services(url) {
-        const response = await fetch(url, {
-          method: "GET",
-          headers: {
-            Authentication: token.token,
-          },
-        });
-        return await response.json();
-      }
-      services(url).then((res) => {
+  watch: {
+    dialog(val) {
+      val || this.close();
+    },
+  },
+  computed: {
+    formTitle() {
+      return this.editedIndex === -1 ? "New Item" : "Edit Item";
+    },
+  },
+  mounted() {
+    const url = "http://localhost:8080/services";
+    const token = JSON.parse(localStorage.getItem("token"));
+    this.getServices(url, token)
+      .then((res) => res.json())
+      .then((res) => {
         if (Array.isArray(res)) {
           this.services = res;
         } else {
-          console.log(res);
+          return console.log("Ошибка");
         }
+      })
+      .catch((e) => console.log(e));
+  },
+  methods: {
+    getServices(url, token) {
+      return fetch(url, {
+        headers: {
+          Authentication: token.token,
+        },
       });
-      this.loading = false;
+    },
+    showModal() {
+      this.dialog = true;
+    },
+    editService(item) {
+      this.editedIndex = this.services.indexOf(item);
+      this.editedItem = { ...item };
+      this.dialog = true;
+    },
+    deleteService(item) {
+      const index = this.services.indexOf(item);
+      confirm("Are you sure you want to delete this item?") &&
+        this.services.splice(index, 1);
+      const url = "http://localhost:8080/services";
+      const token = JSON.parse(localStorage.getItem("token"));
+      fetch(url, {
+        method: "DELETE",
+        body: JSON.stringify(item),
+        headers: {
+          Authentication: token.token,
+          "Content-Type": "application/json",
+        },
+      })
+        .then((res) => res.json())
+        .then((res) => console.log(res));
+    },
+    close() {
+      this.dialog = false;
+      this.$nextTick(() => {
+        this.editedItem = { ...this.defaultItem };
+        this.editedIndex = -1;
+      });
+    },
+    save() {
+      if (this.editedIndex > -1) {
+        Object.assign(this.services[this.editedIndex], this.editedItem);
+        const url = "http://localhost:8080/services";
+        const token = JSON.parse(localStorage.getItem("token"));
+        fetch(url, {
+          method: "PUT",
+          body: JSON.stringify(this.editedItem),
+          headers: {
+            Authentication: token.token,
+            "Content-Type": "application/json",
+          },
+        })
+          .then((response) => response.json())
+          .then((res) => console.log(res));
+      } else {
+        const url = "http://localhost:8080/services";
+        const token = JSON.parse(localStorage.getItem("token"));
+        fetch(url, {
+          method: "POST",
+          body: JSON.stringify(this.editedItem),
+          headers: {
+            Authentication: token.token,
+            "Content-Type": "application/json",
+          },
+        })
+          .then((res) => res.json())
+          .then((res) => (this.services = res));
+      }
+      this.close();
     },
   },
 };

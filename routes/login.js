@@ -3,12 +3,10 @@ const LoginException = require("../exception/LoginException");
 
 const express = require("express");
 const router = express.Router();
-const mysql = require("mysql");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const config = require("../configServer.json");
-
-const pool = mysql.createPool(config.database);
+const pool = require("../poolCreate");
 
 const tokenKey = config.jwt.tokenKey;
 

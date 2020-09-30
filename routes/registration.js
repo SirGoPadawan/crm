@@ -3,14 +3,9 @@ const UserExistsException = require("../exception/UserExistsException");
 
 const express = require("express");
 const router = express.Router();
-const mysql = require("mysql");
-
+const pool = require("../poolCreate");
 const bcrypt = require("bcrypt");
 const salt = bcrypt.genSaltSync(10);
-
-const config = require("../configServer.json");
-
-const pool = mysql.createPool(config.database);
 
 router.post("/", function(req, res, next) {
   pool.query(`SELECT * FROM users WHERE phone = '${req.body.phone}'`, function(

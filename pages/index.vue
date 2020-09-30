@@ -17,6 +17,9 @@
       <v-btn class="ma-2 btn-main" outlined color="blue" @click="goToServices()"
         >Услуги</v-btn
       >
+      <v-btn class="ma-2 btn-main" outlined color="blue" @click="goToUser()"
+        >Пользователь</v-btn
+      >
     </v-container>
   </v-app>
 </template>
@@ -34,6 +37,9 @@ export default {
     },
     goToServices: function() {
       this.$router.push("services");
+    },
+    goToUser: function() {
+      this.$router.push("user");
     },
   },
 };

@@ -36,26 +36,24 @@ export default {
   },
   computed: {},
   methods: {
-    getUsers: async function() {
+    getUsers() {
       this.loading = true;
       const url = "http://localhost:8080/users";
       const token = JSON.parse(localStorage.getItem("token"));
-      async function usersData(url) {
-        const response = await fetch(url, {
-          method: "GET",
-          headers: {
-            Authentication: token.token,
-          },
+      fetch(url, {
+        method: "GET",
+        headers: {
+          Authentication: token.token,
+        },
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          if (Array.isArray(res)) {
+            this.users = res;
+          } else {
+            console.log(res);
+          }
         });
-        return await response.json();
-      }
-      usersData(url).then((res) => {
-        if (Array.isArray(res)) {
-          this.users = res;
-        } else {
-          console.log(res);
-        }
-      });
       this.loading = false;
     },
   },

@@ -35,30 +35,27 @@ export default {
     };
   },
   methods: {
-    getImg: function(file) {
+    getImg(file) {
       this.file = file;
     },
-
-    uploadImg: async function() {
+    uploadImg() {
       if (this.file) {
         const url = "http://localhost:8080/uploadimg";
         const token = JSON.parse(localStorage.getItem("token"));
         let formData = new FormData();
         formData.append("image", this.file);
         formData.append("userPhone", "89999999989");
-        async function uploadImage(url, formData) {
-          const response = await fetch(url, {
-            method: "POST",
-            body: formData,
-            headers: {
-              Authentication: token.token,
-            },
-            content: "89999999989",
-          });
-          return await response.json();
-          this.file = null;
-        }
-        uploadImage(url, formData).then((res) => console.log(res));
+        fetch(url, {
+          method: "POST",
+          body: formData,
+          headers: {
+            Authentication: token.token,
+          },
+          content: "89999999989",
+        })
+          .then((res) => res.json())
+          .then((res) => console.log(res));
+        this.file = null;
       } else {
         console.log("Прикрепите изображение");
       }

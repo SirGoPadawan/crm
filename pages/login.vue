@@ -43,7 +43,6 @@ export default {
       password: "",
       show: false,
       /* regExp: new RegExp(/[^A-Za-z_]|[A - Za - z]|[А - Яа - я]/), !this.regExp.test(this.tel) && */
-
       rules: {
         required: (value) => !!value || "Обязательно для заполнения",
         min: (v) => v.length >= 8 || "Min 8 characters",
@@ -56,26 +55,24 @@ export default {
     },
   },
   methods: {
-    goToRegistration: function() {
+    goToRegistration() {
       this.$router.push("registration");
     },
-    singIn: function() {
+    singIn() {
       const loginUser = {
         phone: this.phone,
         password: this.password,
       };
       const url = "http://localhost:8080/login";
-      async function userLogin(url = "", data = {}) {
-        const response = await fetch(url, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data),
+      fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(loginUser),
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          console.log(res), localStorage.setItem("token", JSON.stringify(res));
         });
-        return await response.json();
-      }
-      userLogin(url, loginUser).then((res) => {
-        console.log(res), localStorage.setItem("token", JSON.stringify(res));
-      });
     },
   },
 };
