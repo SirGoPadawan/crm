@@ -1,64 +1,60 @@
 <template>
-  <v-app id="inspire">
-    <v-container fluid>
-      <v-row>
-        <v-col cols="4" class="form-body">
-          <v-btn class="ma-2" outlined color="blue" @click="goToLogin()"
-            >Форма авторизации</v-btn
-          >
-          <v-text-field
-            v-model="firstname"
-            :rules="[rules.required]"
-            label="Имя"
-            type="text"
-          ></v-text-field>
-          <v-text-field
-            v-model="lastname"
-            :rules="[rules.required]"
-            label="Фамилия"
-            type="text"
-          ></v-text-field>
-          <v-text-field
-            v-model="patronymic"
-            :rules="[rules.required]"
-            label="Отчество"
-            type="text"
-          ></v-text-field>
-          <v-text-field
-            v-model="email"
-            :rules="[rules.required]"
-            label="E-mail"
-            type="email"
-          ></v-text-field>
-          <v-text-field
-            v-model="phone"
-            :rules="[rules.required]"
-            label="Телефон"
-            type="tel"
-          ></v-text-field>
-          <v-text-field
-            :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
-            v-model="password"
-            :rules="[rules.required, rules.minPassSymb]"
-            label="Пароль"
-            :type="show ? 'text' : 'password'"
-          ></v-text-field>
-          <v-btn
-            class="ma-2"
-            outlined
-            color="blue"
-            :disabled="disabledSingUp"
-            @click="regUser()"
-            >Зарегистрироваться</v-btn
-          >
-        </v-col>
-      </v-row>
-    </v-container>
-  </v-app>
+  <v-card dark min-width="400" class="pa-4">
+    <v-card-title>Регистрация</v-card-title>
+    <v-text-field
+      v-model="firstname"
+      :rules="[rules.required]"
+      label="Имя"
+      type="text"
+    ></v-text-field>
+    <v-text-field
+      v-model="lastname"
+      :rules="[rules.required]"
+      label="Фамилия"
+      type="text"
+    ></v-text-field>
+    <v-text-field
+      v-model="patronymic"
+      :rules="[rules.required]"
+      label="Отчество"
+      type="text"
+    ></v-text-field>
+    <v-text-field
+      v-model="email"
+      :rules="[rules.required]"
+      label="E-mail"
+      type="email"
+    ></v-text-field>
+    <v-text-field
+      v-model="phone"
+      :rules="[rules.required]"
+      label="Телефон"
+      type="tel"
+    ></v-text-field>
+    <v-text-field
+      :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+      v-model="password"
+      :rules="[rules.required, rules.minPassSymb]"
+      label="Пароль"
+      :type="show ? 'text' : 'password'"
+    ></v-text-field>
+    <v-btn
+      class="mb-3"
+      color="primary"
+      :disabled="disabledSingUp"
+      @click="regUser()"
+      >Зарегистрироваться
+    </v-btn>
+    <span>
+      Уже есть учетная запись?
+      <nuxt-link to="/login">Войти</nuxt-link>
+    </span>
+  </v-card>
 </template>
 <script>
 import Api from "../Api";
 export default {
+  layout: "noAuth",
   data() {
     return {
       show: false,
@@ -88,10 +84,6 @@ export default {
     },
   },
   methods: {
-    goToLogin() {
-      this.$router.push("login");
-    },
-
     regUser() {
       const params = {
         method: "POST",
@@ -111,16 +103,14 @@ export default {
   },
 };
 </script>
-<style>
-.form-body {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.row {
-  justify-content: center;
-}
+<style scoped>
 .v-btn__content {
-  font-size: 0.55rem;
+  font-size: 0.75rem;
+}
+.v-input {
+  width: 100%;
+}
+.v-card__title {
+  width: max-content;
 }
 </style>

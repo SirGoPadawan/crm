@@ -1,43 +1,42 @@
 <template>
-  <v-app id="inspire">
-    <v-container fluid>
-      <v-row>
-        <v-col cols="1" sm="3">
-          <v-btn class="ma-2" outlined color="blue" @click="goToRegistration()"
-            >Форма регистрации</v-btn
-          >
-          <v-text-field
-            type="tel"
-            :rules="[rules.required]"
-            append-icon="mdi-phone"
-            label="Номер телефона"
-            v-model="phone"
-          ></v-text-field>
-          <v-text-field
-            :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
-            :rules="[rules.required, rules.min]"
-            :type="show ? 'text' : 'password'"
-            label="Введите пароль"
-            hint="At least 8 characters"
-            v-model="password"
-            @click:append="show = !show"
-          ></v-text-field>
-          <v-btn
-            class="ma-2 btn-sing-in"
-            outlined
-            color="blue"
-            :disabled="disabledSingIn"
-            @click="singIn()"
-            >Войти</v-btn
-          >
-        </v-col>
-      </v-row>
-    </v-container>
-  </v-app>
+  <v-card min-width="400" dark class="pa-4">
+    <v-card-title>Авторизация</v-card-title>
+    <v-text-field
+      type="tel"
+      :rules="[rules.required]"
+      append-icon="mdi-phone"
+      label="Номер телефона"
+      v-model="phone"
+    >
+    </v-text-field>
+    <v-text-field
+      :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+      :rules="[rules.required, rules.min]"
+      :type="show ? 'text' : 'password'"
+      label="Введите пароль"
+      hint="Пароль должен содержать больше 8 символов"
+      v-model="password"
+      @click:append="show = !show"
+    >
+    </v-text-field>
+    <v-btn
+      class="mt-5 mb-5 btn-sing-in"
+      color="primary"
+      :disabled="disabledSingIn"
+      @click="singIn()"
+    >
+      Войти
+    </v-btn>
+    <span>
+      Нет учетной записи?
+      <nuxt-link to="/registration">Создать</nuxt-link>
+    </span>
+  </v-card>
 </template>
 <script>
 import Api from "../Api";
 export default {
+  layout: "noAuth",
   data() {
     return {
       phone: "",
@@ -46,7 +45,7 @@ export default {
       /* regExp: new RegExp(/[^A-Za-z_]|[A - Za - z]|[А - Яа - я]/), !this.regExp.test(this.tel) && */
       rules: {
         required: (value) => !!value || "Обязательно для заполнения",
-        min: (v) => v.length >= 8 || "Min 8 characters",
+        min: (v) => v.length >= 8 || "Минимум 8 символов",
       },
     };
   },
@@ -56,9 +55,6 @@ export default {
     },
   },
   methods: {
-    goToRegistration() {
-      this.$router.push("registration");
-    },
     singIn() {
       const params = {
         method: "POST",
@@ -75,11 +71,16 @@ export default {
 };
 </script>
 <style>
-.row {
-  justify-content: center;
-}
-
 .v-btn__content {
-  font-size: 0.55rem;
+  font-size: 0.75rem;
+}
+.v-input {
+  width: 100%;
+}
+.v-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 </style>
