@@ -51,7 +51,6 @@ export default {
         new Api({})
           .fetch("http://localhost:8080/uploadimg", params)
           .then((res) => console.log(res));
-        this.file = null;
       } else {
         console.log("Прикрепите изображение");
       }
