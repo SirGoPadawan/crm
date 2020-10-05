@@ -1,26 +1,25 @@
 <template>
-  <v-app id="inspire">
-    <v-container>
-      <v-card-title>
-        Пользователи
-        <v-spacer></v-spacer>
-        <v-btn class="ma-2" outlined color="blue" @click="getUsers()"
-          >Загрузить список пользователей</v-btn
-        >
-      </v-card-title>
-      <v-data-table
-        :headers="headers"
-        :items="users"
-        class="elevation-1"
-        :loading="loading"
-      >
-      </v-data-table>
-    </v-container>
-  </v-app>
+  <v-card>
+    <v-card-title>
+      Пользователи
+      <v-spacer></v-spacer>
+      <v-btn color="primary" @click="getUsers()"
+        >Загрузить список пользователей
+      </v-btn>
+    </v-card-title>
+    <v-data-table
+      :headers="headers"
+      :items="users"
+      class="elevation-1"
+      :loading="loading"
+    >
+    </v-data-table>
+  </v-card>
 </template>
 <script>
 import Api from "../Api";
 export default {
+  layout: "default",
   data() {
     return {
       loading: false,

@@ -1,59 +1,56 @@
 <template>
-  <v-app id="inspire">
-    <v-container>
-      <v-data-table :headers="headers" :items="services" class="elevation-1">
-        <template v-slot:top>
-          <v-toolbar flat>
-            <v-toolbar-title> Услуги </v-toolbar-title>
-            <v-spacer></v-spacer>
-            <v-dialog v-model="dialog" max-width="500px">
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn color="primary" dark v-bind="attrs" v-on="on">
-                  Новая услуга
-                </v-btn>
-              </template>
-              <v-card>
-                <v-card-title>
-                  <span class="headline">{{ formTitle }}</span>
-                </v-card-title>
-                <v-card-text>
-                  <v-container>
-                    <v-row>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedItem.name"
-                          label="Услуга"
-                        ></v-text-field>
-                      </v-col>
-                    </v-row>
-                  </v-container>
-                </v-card-text>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" text @click="close()">
-                    Отмена
-                  </v-btn>
-                  <v-btn color="blue darken-1" text @click="save()">
-                    Сохранить
-                  </v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
-          </v-toolbar>
-        </template>
-        <template v-slot:[`item.actions`]="{ item }">
-          <v-icon small class="mr-2" @click="editService(item)">
-            mdi-pencil
-          </v-icon>
-          <v-icon small @click="deleteService(item)"> mdi-delete </v-icon>
-        </template>
-      </v-data-table>
-    </v-container>
-  </v-app>
+  <v-data-table :headers="headers" :items="services" class="elevation-1">
+    <template v-slot:top>
+      <v-toolbar flat>
+        <v-toolbar-title> Услуги </v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-dialog v-model="dialog" max-width="500px">
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn color="primary" dark v-bind="attrs" v-on="on">
+              Новая услуга
+            </v-btn>
+          </template>
+          <v-card>
+            <v-card-title>
+              <span class="headline">{{ formTitle }}</span>
+            </v-card-title>
+            <v-card-text>
+              <v-container>
+                <v-row>
+                  <v-col cols="12" sm="6" md="4">
+                    <v-text-field
+                      v-model="editedItem.name"
+                      label="Услуга"
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="blue darken-1" text @click="close()">
+                Отмена
+              </v-btn>
+              <v-btn color="blue darken-1" text @click="save()">
+                Сохранить
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-toolbar>
+    </template>
+    <template v-slot:[`item.actions`]="{ item }">
+      <v-icon small class="mr-2" @click="editService(item)">
+        mdi-pencil
+      </v-icon>
+      <v-icon small @click="deleteService(item)"> mdi-delete </v-icon>
+    </template>
+  </v-data-table>
 </template>
 <script>
 import Api from "../Api";
 export default {
+  layout: "default",
   data() {
     return {
       services: [],
@@ -90,7 +87,7 @@ export default {
   },
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "New Item" : "Edit Item";
+      return this.editedIndex === -1 ? "Новая услуга" : "Переименовать";
     },
   },
   mounted() {

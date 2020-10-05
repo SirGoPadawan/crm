@@ -1,35 +1,29 @@
 <template>
-  <v-app id="inspire">
-    <v-container>
-      <div class="img-container">
-        <v-img
-          src="/cat.jpg"
-          aspect-ratio="1"
-          max-height="300"
-          max-width="300"
-        />
-        <v-file-input
-          accept="image/png, image/jpeg, image/bmp"
-          placeholder="Выберите аватар"
-          prepend-icon="mdi-camera"
-          label="Аватар"
-          @change="getImg"
-        ></v-file-input>
-        <v-btn outlined color="blue" @click="uploadImg()"
-          >Загрузить фотографию</v-btn
-        >
-      </div>
-      <div class="list-unput">
-        <v-input disabled>Айзербаджанов</v-input>
-        <v-input disabled>Айзербаджан</v-input>
-        <v-input disabled>Айзербаджанович</v-input>
-      </div>
-    </v-container>
-  </v-app>
+  <v-card class="user pa-4">
+    <div class="img-container">
+      <v-img src="/cat.jpg" aspect-ratio="1" alt="тут кооотик" />
+      <v-file-input
+        accept="image/png, image/jpeg, image/bmp"
+        placeholder="Выберите аватар"
+        prepend-icon="mdi-camera"
+        label="Аватар"
+        @change="getImg"
+      ></v-file-input>
+      <v-btn outlined color="blue" @click="uploadImg()"
+        >Загрузить фотографию</v-btn
+      >
+    </div>
+    <div class="user__about pa-2 pl-10">
+      <v-input disabled>Айзербаджанов</v-input>
+      <v-input disabled>Айзербаджан</v-input>
+      <v-input disabled>Айзербаджанович</v-input>
+    </div>
+  </v-card>
 </template>
 <script>
 import Api from "../Api";
 export default {
+  layout: "default",
   data() {
     return {
       file: null,
@@ -76,30 +70,31 @@ export default {
   background-color: #f5fbff;
 }
 .v-image {
-  border-radius: 10px;
-}
-.container {
-  display: flex;
-  justify-content: space-between;
-  max-width: 560px;
-  margin: 0 auto;
-  height: 400px;
-  padding: 0;
-  margin-top: 50px;
-}
-.list-unput {
-  width: 50%;
-  display: flex;
-  flex-direction: column;
-  align-items: baseline;
-  border: 1px solid #18a0fb;
-  border-radius: 10px;
-  padding: 25px;
+  width: 208px;
+  height: 208px;
+  border-radius: 50%;
 }
 .img-container {
   display: flex;
   flex-direction: column;
+  align-items: center;
   justify-content: space-between;
   height: 100%;
+}
+.user {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 auto;
+  max-width: 50%;
+}
+.user__about {
+  width: 50%;
+  height: inherit;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.v-input {
+  flex: 0 0 auto;
 }
 </style>
