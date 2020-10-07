@@ -19,6 +19,15 @@ export default {
         })
         .catch((e) => console.log(e));
     },
+    async fetchApi(ctx, value, method) {
+      const params = {
+        method: method,
+        body: JSON.stringify(value),
+      };
+      await new Api(token).fetch(url, params).then((res) => {
+        ctx.commit("updateServices", res);
+      });
+    },
   },
   state: {
     services: [],

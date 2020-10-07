@@ -48,7 +48,6 @@
   </v-data-table>
 </template>
 <script>
-import Api from "../Api";
 import { mapActions, mapState } from "vuex";
 export default {
   layout: "default",
@@ -95,19 +94,13 @@ export default {
     this.getServices();
   },
   methods: {
-    ...mapActions({ getServices: "services/getServices" }),
-    fetchData(value, method) {
-      const params = {
-        method: method,
-        body: JSON.stringify(value),
-      };
-      return new Api().fetch("http://localhost:8080/services", params);
-    },
+    ...mapActions({
+      getServices: "services/getServices",
+      fetchApi: "services/fetchApi",
+    }),
     deleteService(item) {
-      const index = this.services.indexOf(item);
-      confirm("Are you sure you want to delete this item?") &&
-        this.services.splice(index, 1);
-      this.fetchData(item, "DELETE").then((res) => console.log(res));
+      confirm("Вы действительно хотите удалить запись?") &&
+        this.fetchApi(item, "DELETE");
     },
     showModal() {
       this.dialog = true;
@@ -126,14 +119,9 @@ export default {
     },
     save() {
       if (this.editedIndex > -1) {
-        Object.assign(this.services[this.editedIndex], this.editedItem);
-        this.fetchData(this.editedItem, "PUT").then((res) => console.log(res));
-        //тут переделать в мутацию
+        this.fetchApi(this.editedItem, "PUT");
       } else {
-        //тут переделать в мутацию
-        this.fetchData(this.editedItem, "POST").then(
-          (res) => (this.services = res)
-        );
+        this.fetchApi(this.editedItem, "POST");
       }
       this.close();
     },

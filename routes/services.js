@@ -27,7 +27,12 @@ router.delete("/", function(req, res, next) {
       if (err) {
         throw new QueryException();
       }
-      res.status(200).json({ isDeleted: "Успешно" });
+      pool.query("SELECT id, name FROM services", function(err, data) {
+        if (err) {
+          throw new QueryException();
+        }
+        res.status(200).json(data);
+      });
     } catch (e) {
       res.status(e.status).json(e);
     }
@@ -41,7 +46,12 @@ router.put("/", function(req, res, next) {
         if (err) {
           throw new Error();
         }
-        res.status(200).json({ isModified: "ok" });
+        pool.query("SELECT id, name FROM services", function(err, data) {
+          if (err) {
+            throw new QueryException();
+          }
+          res.status(200).json(data);
+        });
       } catch (e) {
         res.json(e);
       }
