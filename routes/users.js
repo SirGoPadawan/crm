@@ -3,6 +3,7 @@ const router = express.Router();
 const pool = require("../poolCreate");
 
 router.get("/", function(req, res, next) {
+  console.log(req);
   pool.query(
     "SELECT firstName, lastName, patronymic, phone, email FROM users",
     function(err, data) {

@@ -5,6 +5,7 @@ const pool = require("../poolCreate");
 const QueryException = require("../exception/QueryException");
 
 router.get("/", function(req, res, next) {
+  console.log(req);
   pool.query("SELECT id, name FROM services", function(err, data) {
     try {
       if (err) {

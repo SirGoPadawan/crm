@@ -47,12 +47,12 @@
     </v-btn>
     <span>
       Уже есть учетная запись?
-      <nuxt-link to="/login">Войти</nuxt-link>
+      <nuxt-link to="/">Войти</nuxt-link>
     </span>
   </v-card>
 </template>
 <script>
-import Api from "../Api";
+import { mapActions } from "vuex";
 export default {
   layout: "noAuth",
   data() {
@@ -84,21 +84,17 @@ export default {
     },
   },
   methods: {
+    ...mapActions({ setUser: "registration/setUser" }),
     regUser() {
-      const params = {
-        method: "POST",
-        body: JSON.stringify({
-          firstname: this.firstname,
-          lastname: this.lastname,
-          patronymic: this.patronymic,
-          email: this.email,
-          phone: this.phone,
-          password: this.password,
-        }),
-      };
-      new Api()
-        .fetch("http://localhost:8080/registration", params)
-        .then((res) => console.log(res));
+      const user = JSON.stringify({
+        firstname: this.firstname,
+        lastname: this.lastname,
+        patronymic: this.patronymic,
+        email: this.email,
+        phone: this.phone,
+        password: this.password,
+      });
+      this.setUser(user);
     },
   },
 };

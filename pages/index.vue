@@ -1,58 +1,82 @@
 <template>
-  <v-app id="inspire">
-    <v-container fluid class="main">
-      <v-btn
-        class="ma-2 btn-main"
-        outlined
-        color="blue"
-        @click="goToRegistration()"
-        >Форма регистрации</v-btn
-      >
-      <v-btn class="ma-2 btn-main" outlined color="blue" @click="goToLogin()"
-        >Форма авторизации</v-btn
-      >
-      <v-btn class="ma-2 btn-main" outlined color="blue" @click="goToUsers()"
-        >Пользователи</v-btn
-      >
-      <v-btn class="ma-2 btn-main" outlined color="blue" @click="goToServices()"
-        >Услуги</v-btn
-      >
-      <v-btn class="ma-2 btn-main" outlined color="blue" @click="goToUser()"
-        >Пользователь</v-btn
-      >
-    </v-container>
-  </v-app>
+  <v-card min-width="400" dark class="pa-4">
+    <v-card-title>Авторизация</v-card-title>
+    <v-text-field
+      type="tel"
+      :rules="[rules.required]"
+      append-icon="mdi-phone"
+      label="Номер телефона"
+      v-model="phone"
+    >
+    </v-text-field>
+    <v-text-field
+      :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+      :rules="[rules.required, rules.min]"
+      :type="show ? 'text' : 'password'"
+      label="Введите пароль"
+      hint="Пароль должен содержать больше 8 символов"
+      v-model="password"
+      @click:append="show = !show"
+    >
+    </v-text-field>
+    <v-btn
+      class="mt-5 mb-5 btn-sing-in"
+      color="primary"
+      :disabled="disabledSingIn"
+      @click="singIn()"
+    >
+      Войти
+    </v-btn>
+    <span>
+      Нет учетной записи?
+      <nuxt-link to="/registration">Создать</nuxt-link>
+    </span>
+  </v-card>
 </template>
 <script>
+import { mapActions } from "vuex";
 export default {
+  layout: "noAuth",
+  data() {
+    return {
+      phone: "",
+      password: "",
+      show: false,
+      /* regExp: new RegExp(/[^A-Za-z_]|[A - Za - z]|[А - Яа - я]/), !this.regExp.test(this.tel) && */
+      rules: {
+        required: (value) => !!value || "Обязательно для заполнения",
+        min: (v) => v.length >= 8 || "Минимум 8 символов",
+      },
+    };
+  },
+  computed: {
+    disabledSingIn() {
+      return !(this.phone && this.password.length >= 8);
+    },
+  },
   methods: {
-    goToRegistration: function() {
-      this.$router.push("registration");
-    },
-    goToLogin: function() {
-      this.$router.push("login");
-    },
-    goToUsers: function() {
-      this.$router.push("users");
-    },
-    goToServices: function() {
-      this.$router.push("services");
-    },
-    goToUser: function() {
-      this.$router.push("user");
+    ...mapActions({ reg: "login/reg" }),
+    singIn() {
+      const user = JSON.stringify({
+        phone: this.phone,
+        password: this.password,
+      });
+      this.reg(user);
     },
   },
 };
 </script>
-<style scoped>
-.main {
-  max-width: 1366px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+<style>
+.v-btn__content {
+  font-size: 0.75rem;
 }
-.btn-main {
-  flex: 1 0 300px;
+.v-input {
+  width: 100%;
+}
+.v-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 </style>

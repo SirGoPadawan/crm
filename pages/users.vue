@@ -3,8 +3,8 @@
     <v-card-title>
       Пользователи
       <v-spacer></v-spacer>
-      <v-btn color="primary" @click="getUsers()"
-        >Загрузить список пользователей
+      <v-btn color="primary" @click="setUsers()">
+        Загрузить список пользователей
       </v-btn>
     </v-card-title>
     <v-data-table
@@ -17,35 +17,31 @@
   </v-card>
 </template>
 <script>
-import Api from "../Api";
+import { mapGetters, mapActions } from "vuex";
 export default {
   layout: "default",
   data() {
     return {
       loading: false,
-      users: [],
       headers: [
-        { text: "Фамилия", align: "center", value: "lastName" },
-        { text: "Имя", align: "center", value: "firstName" },
-        { text: "Отчество", align: "center", value: "patronymic" },
-        { text: "Номер телефона", align: "center", value: "phone" },
-        { text: "Email", align: "center", value: "email" },
+        { text: "Фамилия", value: "lastName" },
+        { text: "Имя", value: "firstName" },
+        { text: "Отчество", value: "patronymic" },
+        { text: "Номер телефона", value: "phone" },
+        { text: "Email", value: "email" },
       ],
     };
   },
-  computed: {},
   methods: {
-    getUsers() {
+    ...mapActions({ getTableUsers: "users/getTableUsers" }),
+    setUsers() {
       this.loading = true;
-      new Api().fetch("http://localhost:8080/users").then((res) => {
-        if (Array.isArray(res)) {
-          this.users = res;
-        } else {
-          console.log(res);
-        }
-      });
+      this.getTableUsers();
       this.loading = false;
     },
+  },
+  computed: {
+    ...mapGetters({ users: "users/getUsers" }),
   },
 };
 </script>

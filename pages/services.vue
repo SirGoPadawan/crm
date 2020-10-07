@@ -49,11 +49,11 @@
 </template>
 <script>
 import Api from "../Api";
+import { mapActions, mapState } from "vuex";
 export default {
   layout: "default",
   data() {
     return {
-      services: [],
       headers: [
         {
           text: "Название услуги",
@@ -89,20 +89,13 @@ export default {
     formTitle() {
       return this.editedIndex === -1 ? "Новая услуга" : "Переименовать";
     },
+    ...mapState({ services: (state) => state.services.services }),
   },
   mounted() {
-    new Api()
-      .fetch("http://localhost:8080/services")
-      .then((res) => {
-        if (Array.isArray(res)) {
-          this.services = res;
-        } else {
-          return console.log("Ошибка");
-        }
-      })
-      .catch((e) => console.log(e));
+    this.getServices();
   },
   methods: {
+    ...mapActions({ getServices: "services/getServices" }),
     fetchData(value, method) {
       const params = {
         method: method,
@@ -135,7 +128,9 @@ export default {
       if (this.editedIndex > -1) {
         Object.assign(this.services[this.editedIndex], this.editedItem);
         this.fetchData(this.editedItem, "PUT").then((res) => console.log(res));
+        //тут переделать в мутацию
       } else {
+        //тут переделать в мутацию
         this.fetchData(this.editedItem, "POST").then(
           (res) => (this.services = res)
         );

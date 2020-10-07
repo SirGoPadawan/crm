@@ -21,7 +21,7 @@
   </v-card>
 </template>
 <script>
-import Api from "../Api";
+import { mapActions } from "vuex";
 export default {
   layout: "default",
   data() {
@@ -30,21 +30,13 @@ export default {
     };
   },
   methods: {
+    ...mapActions({ updateImg: "user/updateImg" }),
     getImg(file) {
       this.file = file;
     },
     uploadImg() {
       if (this.file) {
-        let formData = new FormData();
-        formData.append("image", this.file);
-        formData.append("userPhone", "89999999989");
-        const params = {
-          method: "POST",
-          body: formData,
-        };
-        new Api({})
-          .fetch("http://localhost:8080/uploadimg", params)
-          .then((res) => console.log(res));
+        this.updateImg(this.file);
       } else {
         console.log("Прикрепите изображение");
       }
