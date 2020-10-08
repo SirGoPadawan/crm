@@ -13,9 +13,9 @@ export default {
       ctx.commit("updateUsers", body);
     },
   },
-  state: {
+  state: () => ({
     users: [],
-  },
+  }),
   mutations: {
     updateUsers(state, res) {
       state.users = res;

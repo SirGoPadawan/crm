@@ -1,21 +1,25 @@
 const express = require("express");
 const router = express.Router();
 const pool = require("../poolCreate");
+const dayjs = require("dayjs");
 
 const QueryException = require("../exception/QueryException");
 
-router.get("/", function(req, res, next) {
-  console.log(req);
-  pool.query("SELECT id, name FROM services", function(err, data) {
+function response(req, res) {
+  pool.query("SELECT name, id FROM services", function(err, data) {
     try {
       if (err) {
-        throw new Error();
+        throw new QueryException();
       }
       res.status(200).json(data);
     } catch (e) {
       console.log(e);
     }
   });
+}
+
+router.get("/", function(req, res, next) {
+  response(req, res);
 });
 
 router.delete("/", function(req, res, next) {
@@ -27,12 +31,7 @@ router.delete("/", function(req, res, next) {
       if (err) {
         throw new QueryException();
       }
-      pool.query("SELECT id, name FROM services", function(err, data) {
-        if (err) {
-          throw new QueryException();
-        }
-        res.status(200).json(data);
-      });
+      response(req, res);
     } catch (e) {
       res.status(e.status).json(e);
     }
@@ -40,18 +39,17 @@ router.delete("/", function(req, res, next) {
 });
 router.put("/", function(req, res, next) {
   pool.query(
-    `UPDATE services SET name = "${req.body.name} " WHERE id=${req.body.id}`,
+    `UPDATE services SET name = "${
+      req.body.name
+    }", update_date= "${dayjs().format("YYYY-MM-DD HH:mm:ss")}" WHERE id=${
+      req.body.id
+    }`,
     (err, data) => {
       try {
         if (err) {
           throw new Error();
         }
-        pool.query("SELECT id, name FROM services", function(err, data) {
-          if (err) {
-            throw new QueryException();
-          }
-          res.status(200).json(data);
-        });
+        response(req, res);
       } catch (e) {
         res.json(e);
       }
@@ -60,24 +58,21 @@ router.put("/", function(req, res, next) {
 });
 
 router.post("/", function(req, res, next) {
-  pool.query(`INSERT INTO services (name) VALUES("${req.body.name}")`, function(
-    err,
-    data
-  ) {
-    try {
-      if (err) {
-        throw new QueryException();
-      }
-      pool.query("SELECT id, name FROM services", function(err, data) {
+  pool.query(
+    `INSERT INTO services (name, create_date) VALUES("${
+      req.body.name
+    }","${dayjs().format("YYYY-MM-DD HH:mm:ss")}")`,
+    function(err, data) {
+      try {
         if (err) {
           throw new QueryException();
         }
-        res.status(200).json(data);
-      });
-    } catch (e) {
-      res.status(e.status).json(e);
+        response(req, res);
+      } catch (e) {
+        res.status(e.status).json(e);
+      }
     }
-  });
+  );
 });
 
 module.exports = router;

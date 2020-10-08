@@ -60,6 +60,7 @@ export default {
           value: "name",
           sortable: false,
         },
+
         {
           text: "Действия с услугами",
           align: "center",
@@ -100,7 +101,7 @@ export default {
     }),
     deleteService(item) {
       confirm("Вы действительно хотите удалить запись?") &&
-        this.fetchApi(item, "DELETE");
+        this.fetchApi({ item, method: "DELETE" });
     },
     showModal() {
       this.dialog = true;
@@ -119,19 +120,12 @@ export default {
     },
     save() {
       if (this.editedIndex > -1) {
-        this.fetchApi(this.editedItem, "PUT");
+        this.fetchApi({ item: this.editedItem, method: "PUT" });
       } else {
-        this.fetchApi(this.editedItem, "POST");
+        this.fetchApi({ item: this.editedItem, method: "POST" });
       }
       this.close();
     },
   },
 };
 </script>
-<style scoped>
-.v-data-table,
-.v-card__title {
-  max-width: 600px;
-  margin: 0 auto;
-}
-</style>

@@ -6,6 +6,7 @@ const router = express.Router();
 const pool = require("../poolCreate");
 const bcrypt = require("bcrypt");
 const salt = bcrypt.genSaltSync(10);
+const dayjs = require("dayjs");
 
 router.post("/", function(req, res, next) {
   pool.query(`SELECT * FROM users WHERE phone = '${req.body.phone}'`, function(
@@ -23,15 +24,15 @@ router.post("/", function(req, res, next) {
         const phone = req.body.phone;
         const email = req.body.email;
         const patronymic = req.body.patronymic;
+        const create_date = dayjs().format("YYYY-MM-DD HH:mm:ss");
         pool.query(
-          "INSERT INTO users (phone, pass, firstName, lastName, patronymic, email) VALUES (?,?,?,?,?,?)",
-          [phone, pass, firstName, lastName, patronymic, email],
+          "INSERT INTO users (phone, pass, firstName, lastName, patronymic, email, create_date) VALUES (?,?,?,?,?,?)",
+          [phone, pass, firstName, lastName, patronymic, email, create_date],
           function(err, data) {
             if (err) {
               throw new QueryException();
             }
-            const respons = "Пользователь добавлен";
-            setRes(respons, 201);
+            res.status(201).json({ isCreate: "yes" });
           }
         );
       } else {
@@ -41,9 +42,6 @@ router.post("/", function(req, res, next) {
       res.status(e.status).json(e);
     }
   });
-  function setRes(value, status) {
-    res.status(status).json(value);
-  }
 });
 
 module.exports = router;
