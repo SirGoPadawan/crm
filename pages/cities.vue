@@ -30,10 +30,10 @@ export default {
     };
   },
   methods: {
-    ...mapActions({ getTableCities: "cities/getTableCities" }),
+    ...mapActions({ getCities: "cities/getCities" }),
     setСities() {
       this.loading = true;
-      this.getTableCities(token);
+      this.getCities();
       this.loading = false;
     },
   },

@@ -1,4 +1,6 @@
 /node_modules
 /.nuxt
 configServer.json
-/uploads
+/static
+/models 
+test.js

@@ -19,7 +19,7 @@ router.post("/", function(req, res, next) {
       if (err) {
         throw new QueryException();
       }
-      if (bcrypt.compareSync(req.body.password, data[0].pass)) {
+      if (bcrypt.compareSync(req.body.password, data[0].password)) {
         data[0].token = jwt.sign({ phone: data[0].phone }, tokenKey, {
           algorithm: "HS256",
           expiresIn: "1h",

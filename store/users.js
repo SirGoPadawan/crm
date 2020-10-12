@@ -8,18 +8,14 @@ export default {
       const body = await new Api(token).fetch(url);
       ctx.commit("updateUsers", body);
     },
-    async fetchApi(ctx, { item, method }) {
+    async fetchApi(ctx, { item, method, headers, url }) {
       const token = JSON.parse(window.localStorage.getItem("token")).token;
-      const url = "http://localhost:8080/users";
       const params = {
         method: method,
-        body: JSON.stringify(item),
-        headers: {
-          "Content-Type": "application/json",
-        },
+        body: item,
+        headers: headers,
       };
       await new Api(token).fetch(url, params).then((res) => {
-        console.log(res);
         ctx.commit("updateUsers", res);
       });
     },
@@ -31,5 +27,9 @@ export default {
     updateUsers(state, res) {
       state.users = res;
     },
+  },
+  getters: {
+    getUser: (state) => (id) =>
+      state.users.find((elem) => Number(elem.id) === Number(id)),
   },
 };

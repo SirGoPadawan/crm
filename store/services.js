@@ -16,18 +16,20 @@ export default {
         })
         .catch((e) => console.log(e));
     },
-    async fetchApi(ctx, { item, method }) {
+    async fetchApi(ctx, { item, method, headers }) {
       const token = JSON.parse(window.localStorage.getItem("token")).token;
       const params = {
         method: method,
-        body: JSON.stringify(item),
-        headers: {
-          "Content-Type": "application/json",
-        },
+        body: item,
+        headers: headers,
       };
-      await new Api(token).fetch(url, params).then((res) => {
-        ctx.commit("updateServices", res);
-      });
+      await new Api(token)
+        .fetch(url, params)
+        .then((res) => {
+          console.log(res);
+          ctx.commit("updateServices", res);
+        })
+        .catch((e) => console.log(e));
     },
   },
   state: () => ({

@@ -1,7 +1,7 @@
 <template>
   <v-card class="user pa-4">
     <div class="img-container">
-      <v-img src="/cat.jpg" aspect-ratio="1" alt="тут кооотик" />
+      <v-img :src="user.path_img" aspect-ratio="1" alt="тут кооотик" />
       <v-file-input
         accept="image/png, image/jpeg, image/bmp"
         placeholder="Выберите аватар"
@@ -14,33 +14,52 @@
       >
     </div>
     <div class="user__about pa-2 pl-10">
-      <v-input disabled>Айзербаджанов</v-input>
-      <v-input disabled>Айзербаджан</v-input>
-      <v-input disabled>Айзербаджанович</v-input>
+      <v-input disabled>{{ user.last_name }}</v-input>
+      <v-input disabled>{{ user.first_name }}</v-input>
+      <v-input disabled>{{ user.patronymic }}</v-input>
+      <v-input disabled>{{ user.email }}</v-input>
+      <v-input disabled>{{ user.phone }}</v-input>
     </div>
   </v-card>
 </template>
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 export default {
   layout: "default",
   data() {
     return {
       file: null,
+      idUser: this.$route.params.id,
+      user: null,
     };
   },
+  computed: {
+    ...mapGetters({ getUser: "users/getUser" }),
+  },
   methods: {
-    ...mapActions({ updateImg: "user/updateImg" }),
+    ...mapActions({ fetchApi: "users/fetchApi" }),
     getImg(file) {
       this.file = file;
     },
     uploadImg() {
       if (this.file) {
-        this.updateImg(this.file);
+        const formData = new FormData();
+        formData.append("image", this.file);
+        formData.append("userPhone", `${this.user.phone}`);
+        this.fetchApi({
+          item: formData,
+          headers: {},
+          method: "POST",
+          url: "http://localhost:8080/uploadimg",
+        });
       } else {
         console.log("Прикрепите изображение");
       }
     },
+  },
+  created() {
+    this.user = this.getUser(this.idUser);
+    console.log(this.user);
   },
 };
 </script>

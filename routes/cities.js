@@ -8,7 +8,7 @@ router.get("/", function(req, res, next) {
       if (err) {
         throw new Error();
       }
-      res.json(data);
+      res.status(200).json(data);
     } catch (e) {
       console.log(e);
     }

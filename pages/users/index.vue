@@ -8,21 +8,21 @@
           <v-dialog v-model="dialog" max-width="650">
             <template v-slot:activator="{ on, attrs }">
               <v-btn color="primary" dark v-bind="attrs" v-on="on">
-                Новый пользователь
+                Создать пользователя
               </v-btn>
             </template>
             <v-card>
               <v-card-title>
-                <span class="headline">{{ formTitle }}</span>
+                <span class="headline">Новый пользователь</span>
               </v-card-title>
               <v-card-text>
                 <v-container>
                   <v-text-field
-                    v-model="editedItem.firstName"
+                    v-model="editedItem.first_name"
                     label="Имя"
                   ></v-text-field>
                   <v-text-field
-                    v-model="editedItem.lastName"
+                    v-model="editedItem.last_name"
                     label="Фамилия"
                   ></v-text-field>
                   <v-text-field
@@ -52,11 +52,11 @@
           </v-dialog>
         </v-toolbar>
       </template>
+      -->
       <template v-slot:[`item.actions`]="{ item }">
-        <v-icon small class="mr-2" @click="editUser(item)">
+        <v-icon small class="mr-2" @click="goToAboutUser(item)">
           mdi-pencil
         </v-icon>
-        <v-icon small @click="deleteUser(item)"> mdi-delete </v-icon>
       </template>
     </v-data-table>
   </v-card>
@@ -68,13 +68,13 @@ export default {
   data() {
     return {
       headers: [
-        { text: "Фамилия", value: "lastName" },
-        { text: "Имя", value: "firstName" },
+        { text: "Фамилия", value: "last_name" },
+        { text: "Имя", value: "first_name" },
         { text: "Отчество", value: "patronymic" },
         { text: "Номер телефона", value: "phone" },
         { text: "Email", value: "email" },
         {
-          text: "Действия с пользователями",
+          text: "Более подробно",
           align: "center",
           value: "actions",
           sortable: false,
@@ -82,16 +82,16 @@ export default {
       ],
       editedIndex: -1,
       editedItem: {
-        firstName: "",
-        lastName: "",
+        first_name: "",
+        last_name: "",
         patronymic: "",
         email: "",
         phone: "",
         id: 0,
       },
       defaultItem: {
-        firstName: "",
-        lastName: "",
+        first_name: "",
+        last_name: "",
         patronymic: "",
         email: "",
         phone: "",
@@ -110,18 +110,18 @@ export default {
       getUsers: "users/getUsers",
       fetchApi: "users/fetchApi",
     }),
-    deleteUser(item) {
+    goToAboutUser(item) {
+      this.$router.push({ path: "/users/" + item.id });
+    },
+    /* deleteUser(item) {
       confirm("Вы действительно хотите удалить запись?") &&
         this.fetchApi({ item, method: "DELETE" });
-    },
-    showModal() {
-      this.dialog = true;
-    },
-    editUser(item) {
+    }, */
+    /* editUser(item) {
       this.editedIndex = this.users.indexOf(item);
       this.editedItem = { ...item };
       this.dialog = true;
-    },
+    }, */
     close() {
       this.dialog = false;
       this.$nextTick(() => {
@@ -130,24 +130,16 @@ export default {
       });
     },
     save() {
-      if (this.editedIndex > -1) {
-        this.fetchApi({
-          item: this.editedItem,
-          method: "PUT",
-        });
-      } else {
-        this.fetchApi({
-          item: this.editedItem,
-          method: "POST",
-        });
-      }
+      this.fetchApi({
+        item: JSON.stringify(this.editedItem),
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        url: "http://localhost:8080/users",
+      });
       this.close();
     },
   },
   computed: {
-    formTitle() {
-      return this.editedIndex === -1 ? "Новый пользователь" : "Переименовать";
-    },
     ...mapState({ users: (state) => state.users.users }),
   },
   mounted() {

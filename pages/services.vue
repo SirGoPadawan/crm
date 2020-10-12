@@ -19,7 +19,7 @@
                 <v-row>
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
-                      v-model="editedItem.name"
+                      v-model="editedItem.service"
                       label="Услуга"
                     ></v-text-field>
                   </v-col>
@@ -57,10 +57,9 @@ export default {
         {
           text: "Название услуги",
           align: "center",
-          value: "name",
+          value: "service",
           sortable: false,
         },
-
         {
           text: "Действия с услугами",
           align: "center",
@@ -70,11 +69,11 @@ export default {
       ],
       editedIndex: -1,
       editedItem: {
-        name: "",
+        service: "",
         ID: 0,
       },
       defaultItem: {
-        name: "",
+        service: "",
         ID: 0,
       },
       dialog: false,
@@ -101,7 +100,11 @@ export default {
     }),
     deleteService(item) {
       confirm("Вы действительно хотите удалить запись?") &&
-        this.fetchApi({ item, method: "DELETE" });
+        this.fetchApi({
+          item: JSON.stringify(item),
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+        });
     },
     showModal() {
       this.dialog = true;
@@ -121,13 +124,15 @@ export default {
     save() {
       if (this.editedIndex > -1) {
         this.fetchApi({
-          item: this.editedItem,
+          item: JSON.stringify(this.editedItem),
           method: "PUT",
+          headers: { "Content-Type": "application/json" },
         });
       } else {
         this.fetchApi({
-          item: this.editedItem,
+          item: JSON.stringify(this.editedItem),
           method: "POST",
+          headers: { "Content-Type": "application/json" },
         });
       }
       this.close();

@@ -2,13 +2,13 @@
   <v-card dark min-width="400" class="pa-4">
     <v-card-title>Регистрация</v-card-title>
     <v-text-field
-      v-model="firstname"
+      v-model="first_name"
       :rules="[rules.required]"
       label="Имя"
       type="text"
     ></v-text-field>
     <v-text-field
-      v-model="lastname"
+      v-model="last_name"
       :rules="[rules.required]"
       label="Фамилия"
       type="text"
@@ -58,8 +58,8 @@ export default {
   data() {
     return {
       show: false,
-      firstname: "",
-      lastname: "",
+      first_name: "",
+      last_name: "",
       patronymic: "",
       email: "",
       phone: "",
@@ -74,8 +74,8 @@ export default {
   computed: {
     disabledSingUp() {
       return !(
-        this.firstname &&
-        this.lastname &&
+        this.first_name &&
+        this.last_name &&
         this.patronymic &&
         this.email &&
         this.phone.length >= 11 &&
@@ -87,8 +87,8 @@ export default {
     ...mapActions({ setUser: "registration/setUser" }),
     regUser() {
       const user = JSON.stringify({
-        firstname: this.firstname,
-        lastname: this.lastname,
+        first_name: this.firstname,
+        last_name: this.lastname,
         patronymic: this.patronymic,
         email: this.email,
         phone: this.phone,
