@@ -120,9 +120,15 @@ export default {
     },
     save() {
       if (this.editedIndex > -1) {
-        this.fetchApi({ item: this.editedItem, method: "PUT" });
+        this.fetchApi({
+          item: this.editedItem,
+          method: "PUT",
+        });
       } else {
-        this.fetchApi({ item: this.editedItem, method: "POST" });
+        this.fetchApi({
+          item: this.editedItem,
+          method: "POST",
+        });
       }
       this.close();
     },

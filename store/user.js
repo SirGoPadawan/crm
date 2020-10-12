@@ -1,13 +1,9 @@
 import Api from "../Api";
 
-let token = null;
-if (process.browser) {
-  token = JSON.parse(window.localStorage.getItem("token")).token;
-}
-
 export default {
   actions: {
     async updateImg(ctx, file) {
+      const token = JSON.parse(window.localStorage.getItem("token")).token;
       const formData = new FormData();
       formData.append("image", file);
       formData.append("userPhone", "89999999989");

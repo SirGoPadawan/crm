@@ -1,16 +1,27 @@
 import Api from "../Api";
 
-let token = null;
-if (process.browser) {
-  token = JSON.parse(window.localStorage.getItem("token")).token;
-}
-
 export default {
   actions: {
-    async getTableUsers(ctx) {
+    async getUsers(ctx) {
+      const token = JSON.parse(window.localStorage.getItem("token")).token;
       const url = "http://localhost:8080/users";
       const body = await new Api(token).fetch(url);
       ctx.commit("updateUsers", body);
+    },
+    async fetchApi(ctx, { item, method }) {
+      const token = JSON.parse(window.localStorage.getItem("token")).token;
+      const url = "http://localhost:8080/users";
+      const params = {
+        method: method,
+        body: JSON.stringify(item),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      await new Api(token).fetch(url, params).then((res) => {
+        console.log(res);
+        ctx.commit("updateUsers", res);
+      });
     },
   },
   state: () => ({
@@ -19,11 +30,6 @@ export default {
   mutations: {
     updateUsers(state, res) {
       state.users = res;
-    },
-  },
-  getters: {
-    getUsers(state) {
-      return state.users;
     },
   },
 };

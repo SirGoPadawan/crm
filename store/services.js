@@ -1,13 +1,10 @@
 import Api from "../Api";
 
-let token = null;
-if (process.browser) {
-  token = JSON.parse(window.localStorage.getItem("token")).token;
-}
 const url = "http://localhost:8080/services";
 export default {
   actions: {
     async getServices(ctx) {
+      const token = JSON.parse(window.localStorage.getItem("token")).token;
       await new Api(token)
         .fetch(url)
         .then((res) => {
@@ -20,6 +17,7 @@ export default {
         .catch((e) => console.log(e));
     },
     async fetchApi(ctx, { item, method }) {
+      const token = JSON.parse(window.localStorage.getItem("token")).token;
       const params = {
         method: method,
         body: JSON.stringify(item),
@@ -38,7 +36,6 @@ export default {
   mutations: {
     updateServices(state, res) {
       state.services = res;
-      console.log(state.services);
     },
   },
 };

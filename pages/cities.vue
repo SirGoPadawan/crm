@@ -33,7 +33,7 @@ export default {
     ...mapActions({ getTableCities: "cities/getTableCities" }),
     setСities() {
       this.loading = true;
-      this.getTableCities();
+      this.getTableCities(token);
       this.loading = false;
     },
   },
