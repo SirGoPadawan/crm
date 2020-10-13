@@ -18,7 +18,11 @@ const app = express();
 
 app.use(cors());
 
+const publicPaths = ["/", "/login"];
+
 app.use((req, res, next) => {
+  let value = publicPaths.includes(req.path);
+  if (value) next();
   if (req.headers.authentication) {
     jwt.verify(req.headers.authentication, tokenKey, (err, decoded) => {
       if (err) {
@@ -27,9 +31,7 @@ app.use((req, res, next) => {
         next();
       }
     });
-  } else {
-    next();
-  }
+  } else res.status(403);
 });
 
 app.use(bodyParser.json());

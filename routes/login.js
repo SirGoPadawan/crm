@@ -11,6 +11,7 @@ const { User } = require("../models");
 const tokenKey = config.jwt.tokenKey;
 
 router.post("/", function(req, res, next) {
+  console.log(req.body);
   User.findOne({ where: { phone: req.body.phone } })
     .then((data) => {
       if (bcrypt.compareSync(req.body.password, data.password)) {

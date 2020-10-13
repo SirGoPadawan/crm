@@ -1,7 +1,11 @@
 <template>
   <v-card class="user pa-4">
     <div class="img-container">
-      <v-img :src="user.path_img" aspect-ratio="1" alt="тут кооотик" />
+      <v-img
+        src="/uploads/image-1602592539623.jpeg"
+        aspect-ratio="1"
+        alt="тут кооотик"
+      />
       <v-file-input
         accept="image/png, image/jpeg, image/bmp"
         placeholder="Выберите аватар"
@@ -13,19 +17,28 @@
         >Загрузить фотографию</v-btn
       >
     </div>
+    <v-modal :user="user" />
     <div class="user__about pa-2 pl-10">
-      <v-input disabled>{{ user.last_name }}</v-input>
-      <v-input disabled>{{ user.first_name }}</v-input>
-      <v-input disabled>{{ user.patronymic }}</v-input>
-      <v-input disabled>{{ user.email }}</v-input>
-      <v-input disabled>{{ user.phone }}</v-input>
+      <v-text-field :value="user.last_name" label="Фамилия" disabled>
+      </v-text-field>
+      <v-text-field :value="user.first_name" label="Имя" disabled>
+      </v-text-field>
+      <v-text-field :value="user.patronymic" label="Отчество" disabled>
+      </v-text-field>
+      <v-text-field :value="user.email" label="Email" disabled></v-text-field>
+      <v-text-field :value="user.phone" label="Телефон" disabled>
+      </v-text-field>
     </div>
   </v-card>
 </template>
 <script>
 import { mapActions, mapGetters } from "vuex";
+
 export default {
   layout: "default",
+  components: {
+    "v-modal": () => import("../../components/VModal"),
+  },
   data() {
     return {
       file: null,
@@ -64,22 +77,6 @@ export default {
 };
 </script>
 <style scoped>
-.img-upload-input {
-  display: none;
-}
-.img-input-label {
-  border: 1px solid #18a0fb;
-  border-radius: 5px;
-  cursor: pointer;
-  padding: 5px 20px;
-  color: #2196f3;
-  font-size: 1.1rem;
-  text-align: center;
-  letter-spacing: 0.8px;
-}
-.img-input-label:hover {
-  background-color: #f5fbff;
-}
 .v-image {
   width: 208px;
   height: 208px;
@@ -104,8 +101,5 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-}
-.v-input {
-  flex: 0 0 auto;
 }
 </style>

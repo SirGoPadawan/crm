@@ -54,7 +54,7 @@
       </template>
       -->
       <template v-slot:[`item.actions`]="{ item }">
-        <v-icon small class="mr-2" @click="goToAboutUser(item)">
+        <v-icon small class="mr-2" @click="goToUser(item)">
           mdi-pencil
         </v-icon>
         <v-icon small class="mr-2" @click="deleteUser(item)">
@@ -113,7 +113,7 @@ export default {
       getUsers: "users/getUsers",
       fetchApi: "users/fetchApi",
     }),
-    goToAboutUser(item) {
+    goToUser(item) {
       this.$router.push({ path: "/users/" + item.id });
     },
     deleteUser(item) {
