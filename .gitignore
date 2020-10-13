@@ -1,6 +1,4 @@
 /node_modules
 /.nuxt
 configServer.json
-/static
-/models 
-test.js
+/static 

@@ -1,18 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const pool = require("../poolCreate");
+const { City } = require("../models");
 
 router.get("/", function(req, res, next) {
-  pool.query("SELECT id, city FROM cities", function(err, data) {
-    try {
-      if (err) {
-        throw new Error();
-      }
-      res.status(200).json(data);
-    } catch (e) {
-      console.log(e);
-    }
-  });
+  City.findAll()
+    .then((data) => res.json(data))
+    .catch((e) => console.log(e));
 });
 
 module.exports = router;

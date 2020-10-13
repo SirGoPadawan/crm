@@ -87,8 +87,8 @@ export default {
     ...mapActions({ setUser: "registration/setUser" }),
     regUser() {
       const user = JSON.stringify({
-        first_name: this.firstname,
-        last_name: this.lastname,
+        first_name: this.first_name,
+        last_name: this.last_name,
         patronymic: this.patronymic,
         email: this.email,
         phone: this.phone,

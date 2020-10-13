@@ -57,6 +57,9 @@
         <v-icon small class="mr-2" @click="goToAboutUser(item)">
           mdi-pencil
         </v-icon>
+        <v-icon small class="mr-2" @click="deleteUser(item)">
+          mdi-delete
+        </v-icon>
       </template>
     </v-data-table>
   </v-card>
@@ -113,10 +116,11 @@ export default {
     goToAboutUser(item) {
       this.$router.push({ path: "/users/" + item.id });
     },
-    /* deleteUser(item) {
+    deleteUser(item) {
+      const url = "http://localhost:8080/users"
       confirm("Вы действительно хотите удалить запись?") &&
-        this.fetchApi({ item, method: "DELETE" });
-    }, */
+        this.fetchApi({ item: JSON.stringify(item), method: "DELETE", headers:{"Content-Type": "application/json"}, url});
+    }, 
     /* editUser(item) {
       this.editedIndex = this.users.indexOf(item);
       this.editedItem = { ...item };

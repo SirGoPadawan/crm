@@ -1,80 +1,58 @@
 const express = require("express");
 const router = express.Router();
-const pool = require("../poolCreate");
+const { User } = require("../models");
 
 function response(req, res) {
-  pool.query(
-    "SELECT id, first_name, last_name, patronymic, email, phone, path_img FROM users",
-    function(err, data) {
-      try {
-        if (err) {
-          throw new Error();
-        }
-        res.status(200).json(data);
-      } catch (e) {
-        console.log(e);
-      }
-    }
-  );
+  User.findAll({
+    attributes: [
+      "id",
+      "first_name",
+      "last_name",
+      "patronymic",
+      "phone",
+      "email",
+      "path_img",
+    ],
+  })
+    .then((data) => res.json(data))
+    .catch((e) => console.log(e));
 }
 
 router.get("/", function(req, res, next) {
   response(req, res);
 });
+
 router.delete("/", function(req, res, next) {
-  pool.query(`DELETE FROM users WHERE id="${req.body.id}"`, function(
-    err,
-    data
-  ) {
-    try {
-      if (err) {
-        throw new QueryException();
-      }
-      response(req, res);
-    } catch (e) {
-      res.status(e.status).json(e);
-    }
-  });
+  User.findOne({ where: { id: req.body.id } })
+    .then((data) => data.destroy())
+    .then(() => response(req, res))
+    .catch((e) => console.log(e));
 });
+
 router.put("/", function(req, res, next) {
-  pool.query(
-    `UPDATE users SET first_name = "${
-      req.body.first_name
-    }",  last_name = "${
-      req.body.last_name
-    }", patronymic = "${req.body.patronymic}", phone = "${
-      req.body.phone
-    }", email = "${req.body.email}"  WHERE id=${req.body.id}`,
-    (err, data) => {
-      try {
-        if (err) {
-          throw new Error();
-        }
-        response(req, res);
-      } catch (e) {
-        res.json(e);
-      }
-    }
-  );
+  User.update(
+    {
+      first_name: req.body.first_name,
+      last_name: req.body.last_name,
+      patronymic: req.body.patronymic,
+      phone: req.body.phone,
+      email: req.body.email,
+    },
+    { where: { id: req.body.id } }
+  )
+    .then(() => response(req, res))
+    .catch((e) => console.log(e));
 });
 
 router.post("/", function(req, res, next) {
-  pool.query(
-    `INSERT INTO users (first_name, last_name, patronymic, phone, email) VALUES("${
-      req.body.first_name
-    }","${req.body.last_name}","${
-      req.body.patronymic
-    }","${req.body.phone}","${req.body.email}")`,
-    function(err, data) {
-      try {
-        if (err) {
-          throw new QueryException();
-        }
-        response(req, res);
-      } catch (e) {
-        res.status(e.status).json(e);
-      }
-    }
-  );
+  User.create({
+    first_name: req.body.first_name,
+    last_name: req.body.last_name,
+    patronymic: req.body.patronymic,
+    phone: req.body.phone,
+    email: req.body.email,
+  })
+    .then(() => response(req, res))
+    .catch((e) => console.log(e));
 });
 module.exports = router;
