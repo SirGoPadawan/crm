@@ -12,7 +12,7 @@
           </template>
           <v-card>
             <v-card-title>
-              <span class="headline">{{ formTitle }}</span>
+              <span class="headline">Новая услуга</span>
             </v-card-title>
             <v-card-text>
               <v-container>
@@ -40,10 +40,9 @@
       </v-toolbar>
     </template>
     <template v-slot:[`item.actions`]="{ item }">
-      <v-icon small class="mr-2" @click="editService(item)">
+      <v-icon small class="mr-2" @click="goToService(item)">
         mdi-pencil
       </v-icon>
-      <v-icon small @click="deleteService(item)"> mdi-delete </v-icon>
     </template>
   </v-data-table>
 </template>
@@ -61,7 +60,7 @@ export default {
           sortable: false,
         },
         {
-          text: "Действия с услугами",
+          text: "Редактирование",
           align: "center",
           value: "actions",
           sortable: false,
@@ -85,9 +84,6 @@ export default {
     },
   },
   computed: {
-    formTitle() {
-      return this.editedIndex === -1 ? "Новая услуга" : "Переименовать";
-    },
     ...mapState({ services: (state) => state.services.services }),
   },
   mounted() {
@@ -98,16 +94,16 @@ export default {
       getServices: "services/getServices",
       fetchApi: "services/fetchApi",
     }),
-    deleteService(item) {
+    /* deleteService(item) {
       confirm("Вы действительно хотите удалить запись?") &&
         this.fetchApi({
           item: JSON.stringify(item),
           method: "DELETE",
           headers: { "Content-Type": "application/json" },
         });
-    },
-    showModal() {
-      this.dialog = true;
+    }, */
+    goToService(item) {
+      console.log(item);
     },
     editService(item) {
       this.editedIndex = this.services.indexOf(item);

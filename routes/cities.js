@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const { City } = require("../models");
+const CityController = require("../controllers/CityController");
 
-router.get("/", function(req, res, next) {
-  City.findAll()
-    .then((data) => res.json(data))
-    .catch((e) => console.log(e));
-});
+router
+  .get("/", (req, res) => CityController.actionIndex(req, res))
+  .delete("/:id", (req, res) => CityController.actionDelete(req, res))
+  .put("/:id", (req, res) => CityController.actionUpdate(req, res))
+  .post("/", (req, res) => CityController.actionCreate(req, res));
 
 module.exports = router;

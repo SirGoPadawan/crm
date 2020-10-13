@@ -1,9 +1,11 @@
 <template>
-  <v-app id="inspire" class="overflow-hidden" style="position: relative;">
+  <v-app id="inspire" class="overflow-hidden" style="position: relative">
     <v-header :setDrawer="setDrawer" />
     <v-main fluid>
       <v-nav-bar :drawer="drawer" />
-      <Nuxt />
+      <v-container>
+        <Nuxt />
+      </v-container>
     </v-main>
   </v-app>
 </template>
