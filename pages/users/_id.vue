@@ -1,24 +1,9 @@
 <template>
   <v-card class="user pa-4">
-    <div class="img-container">
-      <v-img
-        src="/uploads/image-1602592539623.jpeg"
-        aspect-ratio="1"
-        alt="тут кооотик"
-      />
-      <v-file-input
-        accept="image/png, image/jpeg, image/bmp"
-        placeholder="Выберите аватар"
-        prepend-icon="mdi-camera"
-        label="Аватар"
-        @change="getImg"
-      ></v-file-input>
-      <v-btn outlined color="blue" @click="uploadImg()"
-        >Загрузить фотографию</v-btn
-      >
-    </div>
-    <v-modal :user="user" />
-    <div class="user__about pa-2 pl-10">
+    <section class="img-container">
+      <v-img :src="user.path_img" aspect-ratio="1" alt="тут кооотик" />
+    </section>
+    <section class="user__about pa-2 pl-10">
       <v-text-field :value="user.last_name" label="Фамилия" disabled>
       </v-text-field>
       <v-text-field :value="user.first_name" label="Имя" disabled>
@@ -28,16 +13,20 @@
       <v-text-field :value="user.email" label="Email" disabled></v-text-field>
       <v-text-field :value="user.phone" label="Телефон" disabled>
       </v-text-field>
-    </div>
+    </section>
+    <section class="edit-menu">
+      <v-edit-user :user="user" />
+      <v-edit-user-img />
+    </section>
   </v-card>
 </template>
 <script>
 import { mapActions, mapGetters } from "vuex";
-
 export default {
   layout: "default",
   components: {
-    "v-modal": () => import("../../components/VModal"),
+    "v-edit-user": () => import("../../components/VEditUser"),
+    "v-edit-user-img": () => import("../../components/EditImgUser"),
   },
   data() {
     return {
@@ -77,6 +66,13 @@ export default {
 };
 </script>
 <style scoped>
+.edit-menu {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100px;
+  padding: 5px;
+}
 .v-image {
   width: 208px;
   height: 208px;

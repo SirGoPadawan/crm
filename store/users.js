@@ -3,13 +3,13 @@ import Api from "../Api";
 export default {
   actions: {
     async getUsers(ctx) {
-      const token = JSON.parse(window.localStorage.getItem("token")).token;
+      const token = JSON.parse(window.localStorage.getItem("token"));
       const url = "http://localhost:8080/users";
       const body = await new Api(token).fetch(url);
       ctx.commit("updateUsers", body);
     },
     async fetchApi(ctx, { item, method, headers, url }) {
-      const token = JSON.parse(window.localStorage.getItem("token")).token;
+      const token = JSON.parse(window.localStorage.getItem("token"));
       const params = {
         method: method,
         body: item,

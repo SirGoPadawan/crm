@@ -21,9 +21,11 @@ app.use(cors());
 const publicPaths = ["/", "/login"];
 
 app.use((req, res, next) => {
+  console.log(req.headers);
   let value = publicPaths.includes(req.path);
-  if (value) next();
-  if (req.headers.authentication) {
+  if (value) {
+    next();
+  } else if (req.headers.authentication) {
     jwt.verify(req.headers.authentication, tokenKey, (err, decoded) => {
       if (err) {
         res.status(403).json({ reason: "unauthorized" });
@@ -31,7 +33,7 @@ app.use((req, res, next) => {
         next();
       }
     });
-  } else res.status(403);
+  } else res.status(403).json({ reason: "unauthorized" });
 });
 
 app.use(bodyParser.json());

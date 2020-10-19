@@ -117,10 +117,15 @@ export default {
       this.$router.push({ path: "/users/" + item.id });
     },
     deleteUser(item) {
-      const url = "http://localhost:8080/users"
+      const url = "http://localhost:8080/users";
       confirm("Вы действительно хотите удалить запись?") &&
-        this.fetchApi({ item: JSON.stringify(item), method: "DELETE", headers:{"Content-Type": "application/json"}, url});
-    }, 
+        this.fetchApi({
+          item: JSON.stringify(item),
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          url,
+        });
+    },
     /* editUser(item) {
       this.editedIndex = this.users.indexOf(item);
       this.editedItem = { ...item };
