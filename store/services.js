@@ -4,7 +4,7 @@ const url = "http://localhost:8080/services";
 export default {
   actions: {
     async getServices(ctx) {
-      const token = JSON.parse(window.localStorage.getItem("token")).token;
+      const token = JSON.parse(window.localStorage.getItem("token"));
       await new Api(token)
         .fetch(url)
         .then((res) => {
@@ -17,7 +17,7 @@ export default {
         .catch((e) => console.log(e));
     },
     async fetchApi(ctx, { item, method, headers }) {
-      const token = JSON.parse(window.localStorage.getItem("token")).token;
+      const token = JSON.parse(window.localStorage.getItem("token"));
       const params = {
         method: method,
         body: item,

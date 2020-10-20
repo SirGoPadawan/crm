@@ -6,8 +6,8 @@
           <v-toolbar-title> Пользователи </v-toolbar-title>
           <v-spacer></v-spacer>
           <v-dialog v-model="dialog" max-width="650">
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn color="primary" dark v-bind="attrs" v-on="on">
+            <template v-slot:activator="{ on }">
+              <v-btn color="primary" dark v-on="on">
                 Создать пользователя
               </v-btn>
             </template>
@@ -56,9 +56,6 @@
       <template v-slot:[`item.actions`]="{ item }">
         <v-icon small class="mr-2" @click="goToUser(item)">
           mdi-pencil
-        </v-icon>
-        <v-icon small class="mr-2" @click="deleteUser(item)">
-          mdi-delete
         </v-icon>
       </template>
     </v-data-table>
@@ -116,21 +113,7 @@ export default {
     goToUser(item) {
       this.$router.push({ path: "/users/" + item.id });
     },
-    deleteUser(item) {
-      const url = "http://localhost:8080/users";
-      confirm("Вы действительно хотите удалить запись?") &&
-        this.fetchApi({
-          item: JSON.stringify(item),
-          method: "DELETE",
-          headers: { "Content-Type": "application/json" },
-          url,
-        });
-    },
-    /* editUser(item) {
-      this.editedIndex = this.users.indexOf(item);
-      this.editedItem = { ...item };
-      this.dialog = true;
-    }, */
+
     close() {
       this.dialog = false;
       this.$nextTick(() => {

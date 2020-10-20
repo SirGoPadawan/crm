@@ -16,7 +16,7 @@ export default {
         headers: headers,
       };
       await new Api(token).fetch(url, params).then((res) => {
-        ctx.commit("updateUsers", res);
+        ctx.commit("updateUser", res);
       });
     },
   },
@@ -26,6 +26,10 @@ export default {
   mutations: {
     updateUsers(state, res) {
       state.users = res;
+    },
+    updateUser(state, res) {
+      const index = state.users.findIndex((elem) => elem.id === res[0].id);
+      state.users.slice(index, 1).push(res[0]);
     },
   },
   getters: {

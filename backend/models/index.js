@@ -1,8 +1,15 @@
 const Sequelize = require("sequelize");
-const sequelize = new Sequelize("sui", "root", "root", {
-  dialect: "mysql",
-  host: "localhost",
-});
+const { database } = require("../../configServer.json");
+
+const sequelize = new Sequelize(
+  database.database,
+  database.user,
+  database.password,
+  {
+    dialect: "mysql",
+    host: "localhost",
+  }
+);
 
 const User = require("./User");
 const Service = require("./Service");

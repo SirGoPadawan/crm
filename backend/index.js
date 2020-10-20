@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const helmet = require("helmet");
-const config = require("./configServer.json");
+const config = require("../configServer.json");
 const jwt = require("jsonwebtoken");
 
 const registrationRouter = require("./routes/registration");
@@ -18,13 +18,11 @@ const app = express();
 
 app.use(cors());
 
-const publicPaths = ["/", "/registration", "/login"];
+const publicPaths = ["/", "/login"];
 
 app.use((req, res, next) => {
-  let value = publicPaths.includes(req.path);
-  if (value) {
-    next();
-  } else if (req.headers.authentication) {
+  if (publicPaths.includes(req.path)) next();
+  if (req.headers.authentication) {
     jwt.verify(req.headers.authentication, tokenKey, (err, decoded) => {
       if (err) {
         res.status(403).json({ reason: "unauthorized" });
@@ -48,6 +46,6 @@ app.use("/uploadimg", uploadImgRouter);
 app.use("/cities", citiesRouter);
 
 app.listen(app.get("port"), () => {
-  console.log("CORS-enabled web server listening on port 8080");
+  console.log("Server started");
 });
 module.exports = app;

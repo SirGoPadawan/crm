@@ -16,12 +16,17 @@
     </section>
     <section class="edit-menu">
       <v-edit-user :user="user" />
-      <v-edit-user-img />
+      <v-edit-user-img :userPhone="user.phone" />
+      <v-btn color="amber darken-3" dark text @click="deleteUser()">
+        <v-icon>
+          mdi-delete
+        </v-icon>
+      </v-btn>
     </section>
   </v-card>
 </template>
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 export default {
   layout: "default",
   components: {
@@ -38,30 +43,20 @@ export default {
   computed: {
     ...mapGetters({ getUser: "users/getUser" }),
   },
-  methods: {
-    ...mapActions({ fetchApi: "users/fetchApi" }),
-    getImg(file) {
-      this.file = file;
-    },
-    uploadImg() {
-      if (this.file) {
-        const formData = new FormData();
-        formData.append("image", this.file);
-        formData.append("userPhone", `${this.user.phone}`);
-        this.fetchApi({
-          item: formData,
-          headers: {},
-          method: "POST",
-          url: "http://localhost:8080/uploadimg",
-        });
-      } else {
-        console.log("Прикрепите изображение");
-      }
-    },
-  },
   created() {
     this.user = this.getUser(this.idUser);
-    console.log(this.user);
+  },
+  methods: {
+    ...mapActions({ fetchApi: "users/fetchApi" }),
+    deleteUser() {
+      const url = `http://localhost:8080/users/${this.user.id}`;
+      confirm("Вы действительно хотите удалить запись?") &&
+        this.fetchApi({
+          method: "DELETE",
+          url,
+        });
+      this.$router.push({ path: "/users/" });
+    },
   },
 };
 </script>

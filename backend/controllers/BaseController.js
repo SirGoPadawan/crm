@@ -15,16 +15,13 @@ class BaseController {
   }
   static actionUpdate(request, response) {
     this.modelClass
-      .update(request.body, { where: { id: Number(request.params.id) } })
-      .then(() =>
-        this.modelClass.findAll({ where: { id: Number(request.params.id) } })
-      )
-      .then((data) => response.json(data))
+      .update(request.body, { where: { id: request.params.id } })
+      .then(() => this.actionIndex(request, response))
       .catch((e) => console.log(e));
   }
   static actionDelete(request, response) {
     this.modelClass
-      .destroy({ where: { id: Number(request.params.id) } })
+      .destroy({ where: { id: request.params.id } })
       .then(() => this.actionIndex(request, response))
       .catch((e) => console.log(e));
   }
