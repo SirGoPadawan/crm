@@ -23,7 +23,7 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="amber darken-3" text @click="uploadImg()">
+        <v-btn color="amber darken-3" text @click="upload()">
           Загрузить
         </v-btn>
         <v-btn color="amber darken-3" text @click="close()">
@@ -36,7 +36,7 @@
 <script>
 import { mapActions } from "vuex";
 export default {
-  props: ["userPhone"],
+  props: ["id"],
   data() {
     return {
       dialog: false,
@@ -44,24 +44,18 @@ export default {
     };
   },
   methods: {
-    ...mapActions({ fetchApi: "users/fetchApi" }),
+    ...mapActions({ uploadImg: "users/uploadImg" }),
     close() {
       this.dialog = false;
     },
     getImg(file) {
       this.file = file;
     },
-    uploadImg() {
-      console.log(!!this.file);
+    upload() {
       if (this.file) {
-        const formData = new FormData();
-        formData.append("image", this.file);
-        formData.append("userPhone", `${this.userPhone}`);
-        this.fetchApi({
-          item: formData,
-          method: "POST",
-          url: "http://localhost:8080/users/uploadimg",
-        });
+        const img = new FormData();
+        img.append("image", this.file);
+        this.uploadImg({ img, id: this.id });
         this.dialog = false;
       } else {
         alert("Прикрепите изображение");

@@ -61,15 +61,10 @@ export default {
     };
   },
   methods: {
-    ...mapActions({ fetchApi: "users/fetchApi" }),
+    ...mapActions({ updateAction: "users/updateAction" }),
     updateUser(editUser) {
       this.dialog = false;
-      this.fetchApi({
-        item: JSON.stringify(editUser),
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        url: `http://localhost:8080/users/${this.user.id}`,
-      });
+      this.updateAction(editUser);
     },
   },
 };

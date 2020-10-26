@@ -6,32 +6,26 @@
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
-            <v-btn color="primary" dark v-bind="attrs" v-on="on">
+            <v-btn color="amber darken-3" dark v-bind="attrs" v-on="on">
               Новая услуга
             </v-btn>
           </template>
           <v-card>
             <v-card-title>
-              <span class="headline">Новая услуга</span>
+              <span class="headline">{{ formTitle }}</span>
             </v-card-title>
             <v-card-text>
-              <v-container>
-                <v-row>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                      v-model="editedItem.service"
-                      label="Услуга"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
-              </v-container>
+              <v-text-field
+                v-model="editedItem.service"
+                label="Наименование"
+              ></v-text-field>
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="close()">
+              <v-btn color="amber darken-3" text @click="close()">
                 Отмена
               </v-btn>
-              <v-btn color="blue darken-1" text @click="save()">
+              <v-btn color="amber darken-3" text @click="save()">
                 Сохранить
               </v-btn>
             </v-card-actions>
@@ -40,8 +34,11 @@
       </v-toolbar>
     </template>
     <template v-slot:[`item.actions`]="{ item }">
-      <v-icon small class="mr-2" @click="goToService(item)">
+      <v-icon small class="mr-2" @click="editService(item)">
         mdi-pencil
+      </v-icon>
+      <v-icon small class="mr-2" @click="deleteService(item)">
+        mdi-delete
       </v-icon>
     </template>
   </v-data-table>
@@ -85,25 +82,23 @@ export default {
   },
   computed: {
     ...mapState({ services: (state) => state.services.services }),
+    formTitle() {
+      return this.editedIndex < 0 ? "Новая услуга" : "Редактирование услуги";
+    },
   },
   mounted() {
-    this.getServices();
+    this.actionIndex();
   },
   methods: {
     ...mapActions({
-      getServices: "services/getServices",
-      fetchApi: "services/fetchApi",
+      actionIndex: "services/actionIndex",
+      updateAction: "services/updateAction",
+      deleteAction: "services/deleteAction",
+      createAction: "services/createAction",
     }),
-    /* deleteService(item) {
+    deleteService(item) {
       confirm("Вы действительно хотите удалить запись?") &&
-        this.fetchApi({
-          item: JSON.stringify(item),
-          method: "DELETE",
-          headers: { "Content-Type": "application/json" },
-        });
-    }, */
-    goToService(item) {
-      console.log(item);
+        this.deleteAction(item.id);
     },
     editService(item) {
       this.editedIndex = this.services.indexOf(item);
@@ -119,17 +114,9 @@ export default {
     },
     save() {
       if (this.editedIndex > -1) {
-        this.fetchApi({
-          item: JSON.stringify(this.editedItem),
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-        });
+        this.updateAction(this.editedItem);
       } else {
-        this.fetchApi({
-          item: JSON.stringify(this.editedItem),
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-        });
+        this.createAction(this.editedItem);
       }
       this.close();
     },

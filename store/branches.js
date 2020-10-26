@@ -3,18 +3,18 @@ import Api from "../Api";
 export default {
   actions: {
     async actionIndex(ctx) {
-      const url = "http://localhost:8080/cities";
+      const url = "http://localhost:8080/branches";
       const token = JSON.parse(window.localStorage.getItem("token"));
       let promise = await new Api(token).fetch(url);
       if (!Array.isArray(promise)) {
         alert(promise.reason);
         promise = [];
-        ctx.commit("setCities", promise);
+        ctx.commit("setBranches", promise);
       }
-      ctx.commit("setCities", promise);
+      ctx.commit("setBranches", promise);
     },
     async updateAction(ctx, item) {
-      const url = `http://localhost:8080/cities/${item.id}`;
+      const url = `http://localhost:8080/branches/${item.id}`;
       const token = JSON.parse(window.localStorage.getItem("token"));
       const params = {
         method: "PUT",
@@ -22,7 +22,7 @@ export default {
         headers: { "Content-Type": "application/json" },
       };
       const promise = await new Api(token).fetch(url, params);
-      ctx.commit("updateCity", promise);
+      ctx.commit("updateBranches", promise);
     },
     async createAction(ctx, item) {
       const token = JSON.parse(window.localStorage.getItem("token"));
@@ -31,9 +31,9 @@ export default {
         body: JSON.stringify(item),
         headers: { "Content-Type": "application/json" },
       };
-      const url = "http://localhost:8080/cities";
+      const url = "http://localhost:8080/branches";
       const promise = await new Api(token).fetch(url, params);
-      ctx.commit("createCity", promise);
+      ctx.commit("createBranches", promise);
     },
     async deleteAction(ctx, id) {
       const token = JSON.parse(window.localStorage.getItem("token"));
@@ -41,33 +41,33 @@ export default {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
       };
-      const url = `http://localhost:8080/cities/${id}`;
+      const url = `http://localhost:8080/branches/${id}`;
       await new Api(token).fetch(url, params);
-      ctx.commit("deleteCity", id);
+      ctx.commit("deleteBranches", id);
     },
   },
   state: () => ({
-    cities: [],
+    branches: [],
   }),
   mutations: {
-    setCities(state, res) {
-      state.cities = res;
+    setBranches(state, res) {
+      state.branches = res;
     },
-    updateCity(state, promise) {
-      let id = state.cities.findIndex(
+    updateBranches(state, promise) {
+      let id = state.branches.findIndex(
         (elem) => Number(elem.id) === Number(promise[0].id)
       );
-      state.cities.splice(id, 1);
-      state.cities.push(promise[0]);
+      state.branches.splice(id, 1);
+      state.branches.push(promise[0]);
     },
-    createCity(state, promise) {
-      state.cities.push(promise);
+    createBranches(state, promise) {
+      state.branches.push(promise);
     },
-    deleteCity(state, id) {
-      const index = state.cities.findIndex(
+    deleteBranches(state, id) {
+      const index = state.branches.findIndex(
         (elem) => Number(elem.id) === Number(id)
       );
-      state.cities.splice(index, 1);
+      state.branches.splice(index, 1);
     },
   },
 };

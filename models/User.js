@@ -31,6 +31,10 @@ class User extends BaseModel {
         type: DataTypes.STRING,
         unique: true,
       },
+      refresh_token: {
+        type: DataTypes.STRING,
+        unique: true,
+      },
     };
   }
 }

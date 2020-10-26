@@ -1,6 +1,11 @@
 <template>
   <v-card>
-    <v-data-table :headers="headers" :items="users" class="elevation-1">
+    <v-data-table
+      :headers="headers"
+      :items="users"
+      :no-data-text="errMessage"
+      class="elevation-1"
+    >
       <template v-slot:top>
         <v-toolbar flat>
           <v-toolbar-title> Пользователи </v-toolbar-title>
@@ -107,8 +112,8 @@ export default {
   },
   methods: {
     ...mapActions({
-      getUsers: "users/getUsers",
-      fetchApi: "users/fetchApi",
+      actionIndex: "users/actionIndex",
+      createAction: "users/createAction",
     }),
     goToUser(item) {
       this.$router.push({ path: "/users/" + item.id });
@@ -122,20 +127,18 @@ export default {
       });
     },
     save() {
-      this.fetchApi({
-        item: JSON.stringify(this.editedItem),
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        url: "http://localhost:8080/users",
-      });
+      this.createAction(this.editedItem);
       this.close();
     },
   },
   computed: {
-    ...mapState({ users: (state) => state.users.users }),
+    ...mapState({
+      users: (state) => state.users.users,
+      errMessage: (state) => state.users.errMessage,
+    }),
   },
   mounted() {
-    this.getUsers();
+    this.actionIndex();
   },
 };
 </script>

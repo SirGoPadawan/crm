@@ -9,7 +9,8 @@ export default {
       };
       const url = "http://localhost:8080/login";
       await new Api().fetch(url, params).then((res) => {
-        console.log(res), localStorage.setItem("token", JSON.stringify(res));
+        localStorage.setItem("token", JSON.stringify(res.token));
+        localStorage.setItem("refreshToken", JSON.stringify(res.refreshToken));
       });
     },
   },

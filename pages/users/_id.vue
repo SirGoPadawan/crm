@@ -16,7 +16,7 @@
     </section>
     <section class="edit-menu">
       <v-edit-user :user="user" />
-      <v-edit-user-img :userPhone="user.phone" />
+      <v-edit-user-img :id="idUser" />
       <v-btn color="amber darken-3" dark text @click="deleteUser()">
         <v-icon>
           mdi-delete
@@ -47,14 +47,10 @@ export default {
     this.user = this.getUser(this.idUser);
   },
   methods: {
-    ...mapActions({ fetchApi: "users/fetchApi" }),
+    ...mapActions({ deleteAction: "users/deleteAction" }),
     deleteUser() {
-      const url = `http://localhost:8080/users/${this.user.id}`;
       confirm("Вы действительно хотите удалить запись?") &&
-        this.fetchApi({
-          method: "DELETE",
-          url,
-        });
+        this.deleteAction(this.idUser);
       this.$router.push({ path: "/users/" });
     },
   },

@@ -1,43 +1,73 @@
 import Api from "../Api";
 
-const url = "http://localhost:8080/services";
 export default {
   actions: {
-    async getServices(ctx) {
+    async actionIndex(ctx) {
+      const url = "http://localhost:8080/services";
       const token = JSON.parse(window.localStorage.getItem("token"));
-      await new Api(token)
-        .fetch(url)
-        .then((res) => {
-          if (Array.isArray(res)) {
-            ctx.commit("updateServices", res);
-          } else {
-            return console.log("Ошибка");
-          }
-        })
-        .catch((e) => console.log(e));
+      let promise = await new Api(token).fetch(url);
+      if (!Array.isArray(res)) {
+        alert(promise.reason);
+        promise = [];
+        ctx.commit("setServices", promise);
+      }
+      ctx.commit("setServices", promise);
     },
-    async fetchApi(ctx, { item, method, headers }) {
+    async updateAction(ctx, item) {
+      const url = `http://localhost:8080/services/${item.id}`;
       const token = JSON.parse(window.localStorage.getItem("token"));
       const params = {
-        method: method,
-        body: item,
-        headers: headers,
+        method: "PUT",
+        body: JSON.stringify(item),
+        headers: { "Content-Type": "application/json" },
       };
-      await new Api(token)
-        .fetch(url, params)
-        .then((res) => {
-          console.log(res);
-          ctx.commit("updateServices", res);
-        })
-        .catch((e) => console.log(e));
+      const promise = await new Api(token).fetch(url, params);
+      ctx.commit("updateService", promise);
+    },
+    async createAction(ctx, item) {
+      const token = JSON.parse(window.localStorage.getItem("token"));
+      const params = {
+        method: "POST",
+        body: JSON.stringify(item),
+        headers: { "Content-Type": "application/json" },
+      };
+      const url = "http://localhost:8080/services";
+      const promise = await new Api(token).fetch(url, params);
+      ctx.commit("createService", promise);
+    },
+    async deleteAction(ctx, id) {
+      const token = JSON.parse(window.localStorage.getItem("token"));
+      const params = {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+      };
+      const url = `http://localhost:8080/services/${id}`;
+      await new Api(token).fetch(url, params);
+      ctx.commit("deleteService", id);
     },
   },
   state: () => ({
     services: [],
   }),
   mutations: {
-    updateServices(state, res) {
+    setServices(state, res) {
       state.services = res;
+    },
+    updateService(state, promise) {
+      let id = state.services.findIndex(
+        (elem) => Number(elem.id) === Number(promise[0].id)
+      );
+      state.services.splice(id, 1);
+      state.services.push(promise[0]);
+    },
+    createService(state, promise) {
+      state.services.push(promise);
+    },
+    deleteService(state, id) {
+      const index = state.services.findIndex(
+        (elem) => Number(elem.id) === Number(id)
+      );
+      state.services.splice(index, 1);
     },
   },
 };
