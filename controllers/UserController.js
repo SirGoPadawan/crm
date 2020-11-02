@@ -3,6 +3,7 @@ const BaseController = require("./BaseController");
 const jwt = require("jsonwebtoken");
 const config = require("../configServer.json");
 const tokenKey = config.jwt.tokenKey;
+const { Op } = require("sequelize");
 
 class UserController extends BaseController {
   static modelClass = User;
@@ -54,6 +55,26 @@ class UserController extends BaseController {
     } else {
       response.status(403).json({ reason: "невалидный токен" });
     }
+  }
+  /* where: {
+        [Op.or]: [
+          { first_name: { [Op.like]: "%" + request.body.value + "%" } },
+          { last_name: { [Op.like]: "%" + request.body.value + "%" } },
+          { patronymic: { [Op.like]: "%" + request.body.value + "%" } },
+        ],
+      }, */
+  static async actionSearch(request, response) {
+    const data = await this.modelClass.findAll({
+      attributes: [
+        "id",
+        "first_name",
+        "last_name",
+        "patronymic",
+        "phone",
+        "email",
+      ],
+    });
+    response.status(200).json(data);
   }
 }
 

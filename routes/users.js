@@ -22,6 +22,7 @@ router
   .post("/:id/uploadimg", upload.any(), (req, res) =>
     UserController.actionUpdateImg(req, res)
   )
-  .post("/", (req, res) => UserController.actionCreate(req, res));
+  .post("/", (req, res) => UserController.actionCreate(req, res))
+  .get("/search", (req, res) => UserController.actionSearch(req, res));
 
 module.exports = router;

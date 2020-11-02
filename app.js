@@ -4,6 +4,8 @@ const bodyParser = require("body-parser");
 const helmet = require("helmet");
 const config = require("./configServer.json");
 const jwt = require("jsonwebtoken");
+const Sentry = require("@sentry/node");
+const Tracing = require("@sentry/tracing");
 
 const registrationRouter = require("./routes/registration");
 const usersRouter = require("./routes/users");
@@ -21,9 +23,28 @@ const app = express();
 
 app.use(cors());
 
+Sentry.init({
+  dsn:
+    "https://bfc349415809431681f553a2836417e5@o467953.ingest.sentry.io/5495199",
+  integrations: [
+    new Sentry.Integrations.Http({ tracing: true }),
+    new Tracing.Integrations.Express({ app }),
+  ],
+  tracesSampleRate: 1.0,
+});
+
+app.use(Sentry.Handlers.requestHandler());
+app.use(Sentry.Handlers.tracingHandler());
+app.use(Sentry.Handlers.errorHandler());
+app.use(function onError(err, req, res, next) {
+  res.statusCode = 500;
+  res.end(res.sentry + "\n");
+});
+
 const publicPaths = ["/", "/registration", "/login", "/refreshToken"];
 
 app.use((req, res, next) => {
+  console.log(req.headers);
   let value = publicPaths.includes(req.path);
   if (value) {
     next();
@@ -35,7 +56,9 @@ app.use((req, res, next) => {
             res.status(403).json({ reason: "Невалидный токен" });
           }
           default: {
-            res.status(403).json(err.message);
+            res
+              .status(403)
+              .json({ reason: "случилась какая то хуита", ...err.message });
           }
         }
       } else if (decoded) {
