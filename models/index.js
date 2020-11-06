@@ -1,5 +1,5 @@
 const Sequelize = require("sequelize");
-const sequelize = new Sequelize("sui", "root", "root", {
+const sequelize = new Sequelize("sui", "root", "", {
   dialect: "mysql",
   host: "localhost",
 });
@@ -10,6 +10,7 @@ const City = require("./City");
 const Company = require("./Company");
 const Branch = require("./Branch");
 const Record = require("./Record");
+const RecordService = require("./RecordService");
 
 const models = {
   User: User.init(sequelize, Sequelize),
@@ -18,6 +19,10 @@ const models = {
   Company: Company.init(sequelize, Sequelize),
   Branch: Branch.init(sequelize, Sequelize),
   Record: Record.init(sequelize, Sequelize),
+  RecordService: RecordService.init(sequelize, Sequelize),
 };
+
+Record.belongsToMany(Service, { through: RecordService });
+Service.belongsToMany(Record, { through: RecordService });
 
 module.exports = models;

@@ -53,6 +53,7 @@
 </template>
 <script>
 import { mapActions } from "vuex";
+
 export default {
   layout: "noAuth",
   data() {
@@ -73,6 +74,7 @@ export default {
   },
   computed: {
     disabledSingUp() {
+      //@todo магические числа типо 11 и 8 и прочей хуиты должны быть в своих константах... Чтобы птом 1) не гадать что за 11 нахуй.. 2) чтобы можнобыло поменять в 1-м месте и всё
       return !(
         this.first_name &&
         this.last_name &&

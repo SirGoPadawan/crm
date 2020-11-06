@@ -55,24 +55,12 @@ export default {
       const promise = await new Api(token).fetch(url, params);
       ctx.commit("updateUser", promise);
     },
-    async actionGetUsers(ctx) {
-      const token = JSON.parse(window.localStorage.getItem("token"));
-      console.log(token);
-      const url = "http://localhost:8080/users/search";
-      const promise = await new Api(token).fetch(url);
-      console.log(promise);
-      ctx.commit("setEntries", promise);
-    },
   },
   state: () => ({
     users: [],
     errMessage: "",
-    entries: [],
   }),
   mutations: {
-    setEntries(state, promise) {
-      state.entries = promise;
-    },
     setUsers(state, res) {
       state.users = res;
     },

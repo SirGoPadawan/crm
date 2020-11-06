@@ -34,14 +34,14 @@
         :short-intervals="false"
         :category-show-all="true"
         @click:event="showEvent"
-        @click:time-category="test"
+        @click:time-category="createEvent"
         locale="ru"
-      ></v-calendar>
-      <v-dialog v-model="openNewEvent" :activator="selectedNewElement">
+      />
+      <v-dialog v-model="isOpenNewRecord" :activator="selectedNewElement">
         <v-card class="pa-5">
           <v-card-title class="pa-0 ma-0">
-            Запись на {{ selectedNewEvent.date }} к
-            {{ selectedNewEvent.category }}
+            Запись на {{ newRecord.date }} к
+            {{ newRecord.category }}
           </v-card-title>
           <v-divider />
           <v-card-text>
@@ -50,19 +50,19 @@
               <div class="d-flex ">
                 <v-text-field
                   label="Фамилия"
-                  v-model="selectedNewEvent.employeeLastName"
+                  v-model="newRecord.last_name"
                   outlined
                   class="mr-1"
                 />
                 <v-text-field
                   label="Имя"
-                  v-model="selectedNewEvent.employeeFirstName"
+                  v-model="newRecord.first_name"
                   outlined
                   class="mr-1"
                 />
                 <v-text-field
                   label="Отчество"
-                  v-model="selectedNewEvent.employeePatronymic"
+                  v-model="newRecord.patronymic"
                   outlined
                   class="mr-1"
                 />
@@ -74,80 +74,114 @@
                 v-model="model"
                 clearable
                 solo
-                placeholder="Placeholder..."
-                :items="items"
+                placeholder="Выберите клиента"
+                :items="clients"
                 item-value="id"
                 item-text="fullname"
               />
               <v-expand-transition>
                 <v-list v-if="model">
                   <v-list-item
-                    v-for="(field, i) in fields"
-                    :key="i"
-                    class=" ma-0 pa-0"
+                    v-for="(field, index) in fields"
+                    :key="index"
+                    class="ma-0 pa-0"
                   >
-                    <v-list-item-content class="d-flex justify-space-between">
+                    <v-list-item-content
+                      class="d-flex justify-space-between align-center"
+                    >
                       <v-text-field
                         label="Фамилия"
                         v-model="field.last_name"
                         outlined
-                        class="mr-1"
+                        class="mb-0 mr-5"
                       />
                       <v-text-field
                         label="Имя"
                         v-model="field.first_name"
                         outlined
-                        class="mr-1"
+                        class="mb-0 mr-5"
                       />
                       <v-text-field
                         label="Отчество"
                         v-model="field.patronymic"
                         outlined
-                        class="mr-1"
+                        class="mb-0 mr-5"
                       />
                       <v-text-field
                         label="Email"
                         v-model="field.email"
                         outlined
-                        class="mr-1"
+                        class="mb-0 mr-5"
                       />
                       <v-text-field
                         label="Телефон"
                         v-model="field.phone"
                         outlined
+                        class="mb-0 mr-5"
                       />
-                      <v-text-field
-                        type="time"
-                        outlined
+                      <v-time
                         label="Начало сеанса"
-                        :min="min"
-                        max="22:00"
+                        v-model="timeStart"
+                        :className="`mr-5 mb-0`"
                       />
-                      <v-text-field
-                        type="time"
-                        outlined
+                      <v-time
                         label="Конец сеанса"
-                        :min="min"
-                        max="22:00"
+                        v-model="timeEnd"
+                        :min="timeStart"
                       />
                     </v-list-item-content>
                   </v-list-item>
                 </v-list>
               </v-expand-transition>
+              <v-card-title>Услуга</v-card-title>
+              <v-autocomplete
+                deletable-chips
+                small-chips
+                multiple
+                v-model="modelService"
+                clearable
+                solo
+                placeholder="Выберите услугу"
+                :items="services"
+                item-value="id"
+                item-text="service"
+              />
             </div>
           </v-card-text>
+          <v-divider class="mb-10" />
+          <v-btn text color="amber darken-3" @click="saveEvent">
+            Сохранить
+          </v-btn>
+          <v-btn text color="amber darken-3" @click="isOpenNewRecord = false">
+            Отмена
+          </v-btn>
         </v-card>
       </v-dialog>
-      <v-dialog v-model="selectedOpen" :activator="selectedElement">
+      <v-dialog
+        v-model="isOpenSelected"
+        :activator="selectedElement"
+        width="500"
+      >
         <v-card>
-          <v-toolbar :color="selectedEvent.color">
-            <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
-          </v-toolbar>
-          <v-card-text class="pa-2"> </v-card-text>
+          <v-card-title class="mb-5 pa-2">
+            {{ selectedRecord.name }}
+          </v-card-title>
+          <v-card-text
+            class="pa-2"
+            v-for="(item, index) in selectedRecord.details"
+            :key="index"
+          >
+            <v-text-field
+              disabled
+              v-model="item.value"
+              :label="item.label"
+              outlined
+            />
+          </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn text color="amber darken-3" @click="selectedOpen = false">
-              Отмена
+            <v-btn text color="amber darken-3" @click="isOpenSelected = false">
+              Закрыть
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -157,107 +191,140 @@
 </template>
 <script>
 import { mapActions, mapState } from "vuex";
+import dayjs from "dayjs";
 
 export default {
+  components: {
+    "v-time": () => import("../components/VTime"), //@todo алиасы в вебпаке есть на папку components? тогда через алиас обращайся а не через ../
+    // если компоненты будешь переносить / разбивать и тд. не прийдется переписывать пути тогда
+  },
   layout: "default",
   data: () => ({
     focus: "",
-    selectedEvent: {},
-    selectedNewEvent: {},
+    timeStart: null,
+    timeEnd: null,
+    selectedRecord: {},
+    newRecord: {},
     selectedElement: null,
     selectedNewElement: null,
-    selectedOpen: false,
-    openNewEvent: false,
+    isOpenSelected: false,
+    isOpenNewRecord: false, //@todo в компоненте есть событие по его закрытии / так вынеси событие функцию и используй ее а не везде присваивай true / false. Разделение ответсвенности будет более явно
     model: null,
-    min: "06:00",
-    events: [
-      {
-        start: "2020-10-29 07:40",
-        end: "2020-10-29 08:30",
-        name: "Генадий Пучков",
-        color: "amber darken-3",
-        details: [{ value: "test", label: "test" }],
-        category: "Зурабов Коля Колянович",
-      },
-      {
-        start: "2020-10-29 08:40",
-        end: "2020-10-29 09:30",
-        name: "Косипоша",
-        color: "amber darken-3",
-        details: [{ value: "test", label: "test" }],
-        category: "Хуектов Катя Котеевна",
-      },
-    ],
+    modelService: null,
   }),
   computed: {
     ...mapState({
-      employes: (state) => state.users.users,
-      entries: (state) => state.users.entries,
+      users: (state) => state.users.users,
+      services: (state) => state.services.services,
+      records: (state) => state.records.records,
     }),
     categories() {
-      let arr = [];
-      this.employes.map((elem) => {
-        arr.push(
-          `${elem.last_name + " " + elem.first_name + " " + elem.patronymic}`
-        );
-      });
-      return arr;
+      return this.users.map((elem) => this.getFullName(elem));
     },
-    items() {
-      return this.entries.map((item) => {
-        const fullname = `${item.last_name +
-          " " +
-          item.first_name +
-          " " +
-          item.patronymic}`;
-
-        return { ...item, fullname };
+    clients() {
+      return this.users.map((elem) => {
+        return { ...elem, fullname: this.getFullName(elem) };
       });
     },
     fields() {
       if (!this.model) return [];
-      return [{ ...this.entries.find((elem) => elem.id === this.model) }];
+      return [{ ...this.users.find((elem) => elem.id === this.model) }];
+    },
+    events() {
+      let preEvents = [];
+      this.records.map((elem) => {
+        const findedEmployee = this.getElemById(this.users, elem.employee_id);
+        const findedClient = this.getElemById(this.users, elem.client_id);
+        const details = [
+          {
+            label: "Клиент",
+            value: this.getFullName(findedClient),
+          },
+          { label: "Начало сеанса", value: elem.start_record },
+          { label: "Конец сеанса", value: elem.end_record },
+          { label: "Продолжительность", value: elem.duration },
+        ];
+        const obj = {
+          start: this.getDateTime(elem.date_recording, elem.start_record),
+          end: this.getDateTime(elem.date_recording, elem.end_record),
+          category: this.getFullName(findedEmployee),
+          name: this.getTitle(elem.strServices, elem.start_record),
+          details,
+        };
+        preEvents.push(obj);
+      });
+      if (this.records.length === 0) return [];
+      return preEvents;
     },
   },
   mounted() {
     this.$refs.calendar.checkChange();
     this.actionIndex();
-    this.actionGetUsers();
+    this.actionGetServices();
   },
   methods: {
     ...mapActions({
       actionIndex: "users/actionIndex",
-      actionGetUsers: "users/actionGetUsers",
+      actionGetServices: "services/actionIndex",
+      actionCreateEvent: "records/createAction",
+      /*  actionIndexRecords: "records/actionIndex" */
     }),
+    //вспомогательные функции
+    getTitle(str, time) {
+      return `${str.trim().substring(0, str.length - 2) + " на " + time}`;
+    },
+    getElemById(array, id) {
+      return array.find((el) => Number(el.id) === Number(id));
+    },
+    getFullName(elem) {
+      return `${elem.last_name +
+        " " +
+        elem.first_name +
+        " " +
+        elem.patronymic}`;
+    },
+    getDateTime(date, time) {
+      return dayjs(`${date}`).format("YYYY-MM-DD") + " " + time;
+    },
     viewDay({ date }) {
       this.focus = date;
-      this.type = "day";
     },
-    test(event) {
-      if (this.openNewEvent) {
-        this.openNewEvent = false;
-      } else {
-        this.openNewEvent = true;
-        this.selectedNewEvent = event;
-        const fullnameArr = event.category.split(" ");
-        (this.selectedNewEvent = {
-          ...this.selectedNewEvent,
-          employeeLastName: fullnameArr[0],
-          employeeFirstName: fullnameArr[1],
-          employeePatronymic: fullnameArr[2],
-        }),
-          this.events.push({
-            start: `${event.date + " " + event.time}`,
-            end: `${event.date + " " + event.time}`,
-            name: "Косипоша",
-            color: "amber darken-3",
-            details: [{ value: "test", label: "test" }],
-            category: event.category,
-          });
-      }
+    //закончились вспомогательные функции
+    createEvent(event) {
+      this.isOpenNewRecord = !this.isOpenNewRecord;
+      const name = event.category.split(" ");
+      const { last_name, first_name, patronymic, id } = this.clients.find(
+        (elem) => elem.first_name === name[1]
+      );
+      this.newRecord = {
+        category: event.category,
+        last_name,
+        first_name,
+        patronymic,
+        id,
+      };
     },
     setToday() {
       this.focus = "";
+    },
+    saveEvent() {
+      const timeArr = this.timeStart.split(":");
+      const duration = dayjs(`0000-00-00 ${this.timeEnd}`)
+        .subtract(timeArr[0], "hour")
+        .subtract(timeArr[1], "minute")
+        .format("HH:mm:ss");
+      const item = {
+        employee_id: this.newRecord.id,
+        client_id: this.fields[0].id,
+        services_id: this.modelService,
+        date_recording: dayjs(this.newRecord.date).format("YYYY-MM-DD"),
+        start_record: `${this.timeStart}:00`,
+        end_record: `${this.timeEnd}:00`,
+        duration,
+      };
+      this.actionCreateEvent(item);
+      this.isOpenNewRecord = false;
+      this.newRecord = {};
     },
     prev() {
       this.$refs.calendar.prev();
@@ -267,18 +334,12 @@ export default {
     },
     showEvent({ nativeEvent, event }) {
       const open = () => {
-        this.selectedEvent = event;
+        this.selectedRecord = event;
         this.selectedElement = nativeEvent.target;
-        setTimeout(() => {
-          this.selectedOpen = true;
-        }, 10);
+        this.isOpenSelected = true;
       };
-      if (this.selectedOpen) {
-        this.selectedOpen = false;
-        setTimeout(open, 10);
-      } else {
-        open();
-      }
+      this.isOpenSelected = !this.isOpenSelected;
+      open();
       nativeEvent.stopPropagation();
     },
   },

@@ -27,6 +27,7 @@
 </template>
 <script>
 import { mapGetters, mapActions } from "vuex";
+
 export default {
   layout: "default",
   components: {
@@ -56,6 +57,7 @@ export default {
   },
 };
 </script>
+
 <style scoped>
 .edit-menu {
   display: flex;

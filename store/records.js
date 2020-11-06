@@ -50,8 +50,8 @@ export default {
     records: [],
   }),
   mutations: {
-    setRecords(state, res) {
-      state.records = res;
+    setRecords(state, promise) {
+      state.records = promise;
     },
     updateRecords(state, promise) {
       let id = state.records.findIndex(
@@ -62,6 +62,7 @@ export default {
     },
     createRecords(state, promise) {
       state.records.push(promise);
+      console.log(state.records);
     },
     deleteRecords(state, id) {
       const index = state.records.findIndex(

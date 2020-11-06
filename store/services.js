@@ -6,7 +6,7 @@ export default {
       const url = "http://localhost:8080/services";
       const token = JSON.parse(window.localStorage.getItem("token"));
       let promise = await new Api(token).fetch(url);
-      if (!Array.isArray(res)) {
+      if (!Array.isArray(promise)) {
         alert(promise.reason);
         promise = [];
         ctx.commit("setServices", promise);
@@ -50,8 +50,8 @@ export default {
     services: [],
   }),
   mutations: {
-    setServices(state, res) {
-      state.services = res;
+    setServices(state, promise) {
+      state.services = promise;
     },
     updateService(state, promise) {
       let id = state.services.findIndex(

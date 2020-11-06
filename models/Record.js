@@ -1,7 +1,11 @@
 const BaseModel = require("./BaseModel");
+
 const dayjs = require("dayjs");
 
 class Record extends BaseModel {
+  formatTime(value) {
+    return dayjs(`0000-00-00 ${value}`).format("HH:mm:ss");
+  }
   static fields(DataTypes) {
     return {
       ...super.fields(DataTypes),
@@ -11,30 +15,31 @@ class Record extends BaseModel {
       employee_id: {
         type: DataTypes.INTEGER,
       },
-      service_id: {
-        type: DataTypes.INTEGER,
+      start_record: {
+        type: DataTypes.TIME,
+        set(value) {
+          this.setDataValue("start_record", this.formatTime(value));
+        },
+      },
+      end_record: {
+        type: DataTypes.TIME,
+        set(value) {
+          this.setDataValue("end_record", this.formatTime(value));
+        },
       },
       date_recording: {
         type: DataTypes.DATE,
         get() {
           return dayjs(this.getDataValue("date_recording")).format(
-            "YYYY-MM-DD HH:mm"
-          );
-        },
-        set(value) {
-          this.setDataValue(
-            "date_recording",
-            dayjs(value).format("YYYY-MM-DD HH:mm:ss")
+            "YYYY-MM-DD"
           );
         },
       },
       duration: {
         type: DataTypes.TIME,
-        get() {
-          const time = this.getDataValue("duration")
-            .toString()
-            .split(":");
-          return `${time[0] + ":" + time[1]}`;
+        set(value) {
+          const time = dayjs(`0000-00-00 ${value}`).format("HH:mm:ss");
+          this.setDataValue("duration", time);
         },
       },
     };

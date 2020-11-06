@@ -44,7 +44,6 @@ app.use(function onError(err, req, res, next) {
 const publicPaths = ["/", "/registration", "/login", "/refreshToken"];
 
 app.use((req, res, next) => {
-  console.log(req.headers);
   let value = publicPaths.includes(req.path);
   if (value) {
     next();
@@ -86,4 +85,5 @@ app.use("/refreshToken", refreshTokenRouter);
 app.listen(app.get("port"), () => {
   console.log("CORS-enabled web server listening on port 8080");
 });
+
 module.exports = app;
