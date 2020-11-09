@@ -6,6 +6,7 @@ export default {
       const url = "http://localhost:8080/records";
       const token = JSON.parse(window.localStorage.getItem("token"));
       let promise = await new Api(token).fetch(url);
+      console.log(promise);
       if (!Array.isArray(promise)) {
         alert(promise.reason);
         promise = [];
@@ -25,14 +26,13 @@ export default {
       ctx.commit("updateRecords", promise);
     },
     async createAction(ctx, item) {
-      const token = JSON.parse(window.localStorage.getItem("token"));
       const params = {
         method: "POST",
         body: JSON.stringify(item),
         headers: { "Content-Type": "application/json" },
       };
       const url = "http://localhost:8080/records";
-      const promise = await new Api(token).fetch(url, params);
+      const promise = await this.$Api.fetch(url, params);
       ctx.commit("createRecords", promise);
     },
     async deleteAction(ctx, id) {

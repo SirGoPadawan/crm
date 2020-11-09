@@ -11,4 +11,5 @@ export default {
   head: {
     link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
   },
+  plugins: [{ src: "~/plugins/test.js", mode: "client" }],
 };

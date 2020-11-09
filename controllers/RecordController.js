@@ -13,6 +13,11 @@ class RecordController extends BaseController {
     "start_record",
     "end_record",
   ];
+  /* static async actionIndex(request, response) {
+    const data = await this.modelClass.findAll({ attributes: this.fields });
+    const records = await data.getServices();
+    console.log(records);
+  } */
   static async actionCreate(request, response) {
     const records = await this.modelClass.create(request.body);
     const services = await Service.findAll({

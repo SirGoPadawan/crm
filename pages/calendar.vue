@@ -261,13 +261,15 @@ export default {
     this.$refs.calendar.checkChange();
     this.actionIndex();
     this.actionGetServices();
+    this.actionIndexRecords();
+    console.log(this.$Api);
   },
   methods: {
     ...mapActions({
       actionIndex: "users/actionIndex",
       actionGetServices: "services/actionIndex",
       actionCreateEvent: "records/createAction",
-      /*  actionIndexRecords: "records/actionIndex" */
+      actionIndexRecords: "records/actionIndex",
     }),
     //вспомогательные функции
     getTitle(str, time) {
