@@ -18,23 +18,19 @@
               <v-text-field
                 v-model="editedItem.client_id"
                 label="Идентификатор клиента"
-              ></v-text-field>
+              />
               <v-text-field
                 v-model="editedItem.employee_id"
                 label="Идентификатор сотрудника"
-              ></v-text-field>
-              <v-text-field
-                v-model="editedItem.service_id"
-                label="Идентификатор услуги"
-              ></v-text-field>
+              />
               <v-text-field
                 v-model="editedItem.date_recording"
                 label="Время записи"
-              ></v-text-field>
+              />
               <v-text-field
                 v-model="editedItem.duration"
                 label="Продолжительность сеанса"
-              ></v-text-field>
+              />
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
@@ -73,12 +69,6 @@ export default {
           sortable: false,
         },
         {
-          text: "Идентификатор услуги",
-          align: "center",
-          value: "service_id",
-          sortable: false,
-        },
-        {
           text: "Идентификатор сотрудника",
           align: "center",
           value: "employee_id",
@@ -106,7 +96,6 @@ export default {
       editedIndex: -1,
       editedItem: {
         client_id: 0,
-        service_id: 0,
         employee_id: 0,
         duration: 0,
         date_recording: 0,
@@ -114,7 +103,6 @@ export default {
       },
       defaultItem: {
         client_id: 0,
-        service_id: 0,
         employee_id: 0,
         duration: 0,
         date_recording: 0,

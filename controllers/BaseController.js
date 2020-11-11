@@ -1,5 +1,4 @@
 const dayjs = require("dayjs");
-const { json } = require("sequelize/types");
 
 class BaseController {
   static modelClass = null;
