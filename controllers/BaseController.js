@@ -1,34 +1,47 @@
 const dayjs = require("dayjs");
+const { json } = require("sequelize/types");
 
 class BaseController {
   static modelClass = null;
   static fields = [];
-  static actionIndex(request, response) {
-    this.modelClass
-      .findAll({ attributes: this.fields })
-      .then((data) => {
-        response.json(data);
-      })
-      .catch((e) => console.log(e));
+  static async actionIndex(request, response) {
+    try {
+      const data = await this.modelClass.findAll({ attributes: this.fields });
+      response.json(200).json(data);
+    } catch (error) {
+      response.status(400).json(error);
+    }
   }
   static async actionCreate(request, response) {
-    const newItem = await this.modelClass.create(request.body);
-    response.json(newItem);
+    try {
+      const newItem = await this.modelClass.create(request.body);
+      response.status(200).json(newItem);
+    } catch (error) {
+      response.status(400).json(error);
+    }
   }
-  static actionUpdate(request, response) {
-    this.modelClass
-      .update(request.body, { where: { id: Number(request.params.id) } })
-      .then(() =>
-        this.modelClass.findAll({ where: { id: Number(request.params.id) } })
-      )
-      .then((data) => response.json(data))
-      .catch((e) => console.log(e));
+  static async actionUpdate(request, response) {
+    try {
+      await this.modelClass.update(request.body, {
+        where: { id: Number(request.params.id) },
+      });
+      const data = await this.modelClass.findAll({
+        where: { id: Number(request.params.id) },
+      });
+      response.status(200).json(data);
+    } catch (error) {
+      response.status(400).json(error);
+    }
   }
-  static actionDelete(request, response) {
-    this.modelClass
-      .destroy({ where: { id: Number(request.params.id) } })
-      .then(() => response.json({ delete: "yes" }))
-      .catch((e) => console.log(e));
+  static async actionDelete(request, response) {
+    try {
+      await this.modelClass.destroy({
+        where: { id: Number(request.params.id) },
+      });
+      response.status(200).json({ delete: "yes" });
+    } catch (error) {
+      response.status(400).json(error);
+    }
   }
 }
 

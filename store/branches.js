@@ -1,52 +1,23 @@
-import Api from "../Api";
-//@todo ЕБАТЬ КОПАТЬ.. вот это стор.. ЯПЛАКАЛЪ...
-//  вынести инициплизацию Api в одно место. можно в глобальный объект Window
-//  домен, порт тоже устанавливается при инициализации экземпляра. Они никогда не будут меняться
-//  и их ненадобудет повторять в каждом запросе
-//  тоже касается и токена. Подтягивается 1-н раз при создании объекта и все. Если протухнет - уже api обновляет его, записывает обновленный в localstorage.
 export default {
   actions: {
     async actionIndex(ctx) {
-      const url = "http://localhost:8080/branches";
-      const token = JSON.parse(window.localStorage.getItem("token"));
-      let promise = await new Api(token).fetch(url);
-      if (!Array.isArray(promise)) {
-        alert(promise.reason);
-        promise = [];
-        ctx.commit("setBranches", promise);
-      }
-      ctx.commit("setBranches", promise);
+      const url = "/branches";
+      const response = await this.$api.actionIndex(url);
+      ctx.commit("setBranches", response);
     },
     async updateAction(ctx, item) {
-      const url = `http://localhost:8080/branches/${item.id}`;
-      const token = JSON.parse(window.localStorage.getItem("token"));
-      const params = {
-        method: "PUT",
-        body: JSON.stringify(item),
-        headers: { "Content-Type": "application/json" },
-      };
-      const promise = await new Api(token).fetch(url, params);
-      ctx.commit("updateBranches", promise);
+      const url = `/branches/${item.id}`;
+      const response = await this.$api.actionUpdate(url, item);
+      ctx.commit("updateBranches", response);
     },
     async createAction(ctx, item) {
-      const token = JSON.parse(window.localStorage.getItem("token"));
-      const params = {
-        method: "POST",
-        body: JSON.stringify(item),
-        headers: { "Content-Type": "application/json" },
-      };
-      const url = "http://localhost:8080/branches";
-      const promise = await new Api(token).fetch(url, params);
-      ctx.commit("createBranches", promise);
+      const url = "/branches";
+      const response = await this.$api.actionCreate(url, item);
+      ctx.commit("createBranches", response);
     },
     async deleteAction(ctx, id) {
-      const token = JSON.parse(window.localStorage.getItem("token"));
-      const params = {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-      };
-      const url = `http://localhost:8080/branches/${id}`;
-      await new Api(token).fetch(url, params);
+      const url = `/branches/${id}`;
+      await this.$api.actionDelete(url);
       ctx.commit("deleteBranches", id);
     },
   },

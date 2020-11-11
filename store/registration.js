@@ -1,5 +1,3 @@
-import Api from "../Api";
-
 export default {
   actions: {
     async setUser(ctx, user) {
@@ -8,7 +6,8 @@ export default {
         body: user,
       };
       const url = "http://localhost:8080/registration";
-      await new Api().fetch(url, params).then((res) => console.log(res));
+      const response = await this.$api.fetch(url, params);
+      console.log(response);
     },
   },
 };

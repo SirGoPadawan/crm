@@ -1,59 +1,34 @@
-import Api from "../Api";
-
 export default {
   actions: {
     async actionIndex(ctx) {
-      const token = JSON.parse(window.localStorage.getItem("token"));
-      const url = "http://localhost:8080/users";
-      let promise = await new Api(token).fetch(url);
-      if (!Array.isArray(promise)) {
-        const textNoData = promise.reason;
-        promise = [];
-        ctx.commit("setError", textNoData);
-        ctx.commit("setUsers", promise);
-      }
-      ctx.commit("setUsers", promise);
+      const url = "/users";
+      const response = await this.$api.actionIndex(url);
+      ctx.commit("setUsers", response);
     },
     async createAction(ctx, item) {
-      const token = JSON.parse(window.localStorage.getItem("token"));
-      const url = "http://localhost:8080/users";
-      const params = {
-        method: "POST",
-        body: JSON.stringify(item),
-        headers: { "Content-Type": "application/json" },
-      };
-      const promise = await new Api(token).fetch(url, params);
-      ctx.commit("createUser", promise);
+      const url = "/users";
+      const response = await this.$api.actionCreate(url, item);
+      ctx.commit("createUser", response);
     },
-    async deleteAction(ctx, id) {
-      const url = `http://localhost:8080/users/${id}`;
-      const token = JSON.parse(window.localStorage.getItem("token"));
-      const params = {
-        method: "DELETE",
-      };
-      await new Api(token).fetch(url, params);
-      ctx.commit("deleteUser", id);
-    },
+
     async updateAction(ctx, item) {
-      const url = `http://localhost:8080/users/${item.id}`;
-      const token = JSON.parse(window.localStorage.getItem("token"));
-      const params = {
-        method: "PUT",
-        body: JSON.stringify(item),
-        headers: { "Content-Type": "application/json" },
-      };
-      const promise = await new Api(token).fetch(url, params);
+      const url = `/users/${item.id}`;
+      const response = await this.$api.actionUpdate(url, params);
       ctx.commit("updateUser", promise);
     },
+    async deleteAction(ctx, id) {
+      const url = `/users/${id}`;
+      await this.$api.actionDelete(url);
+      ctx.commit("deleteUser", id);
+    },
     async uploadImg(ctx, { img, id }) {
-      const token = JSON.parse(window.localStorage.getItem("token"));
       const url = `http://localhost:8080/users/${id}/uploadimg`;
       const params = {
         method: "POST",
         body: img,
       };
-      const promise = await new Api(token).fetch(url, params);
-      ctx.commit("updateUser", promise);
+      const response = await this.$api.fetch(url, params);
+      ctx.commit("updateUser", response);
     },
   },
   state: () => ({
@@ -63,9 +38,6 @@ export default {
   mutations: {
     setUsers(state, res) {
       state.users = res;
-    },
-    setError(state, textNoData) {
-      state.errMessage = textNoData;
     },
     createUser(state, promise) {
       state.users.push(promise);

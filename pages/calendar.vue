@@ -235,6 +235,7 @@ export default {
       this.records.map((elem) => {
         const findedEmployee = this.getElemById(this.users, elem.employee_id);
         const findedClient = this.getElemById(this.users, elem.client_id);
+        console.log(findedClient);
         const details = [
           {
             label: "Клиент",
@@ -248,7 +249,7 @@ export default {
           start: this.getDateTime(elem.date_recording, elem.start_record),
           end: this.getDateTime(elem.date_recording, elem.end_record),
           category: this.getFullName(findedEmployee),
-          name: this.getTitle(elem.strServices, elem.start_record),
+          name: this.getTitle(elem.Services, elem.start_record),
           details,
         };
         preEvents.push(obj);
@@ -262,7 +263,6 @@ export default {
     this.actionIndex();
     this.actionGetServices();
     this.actionIndexRecords();
-    console.log(this.$Api);
   },
   methods: {
     ...mapActions({
@@ -272,8 +272,10 @@ export default {
       actionIndexRecords: "records/actionIndex",
     }),
     //вспомогательные функции
-    getTitle(str, time) {
-      return `${str.trim().substring(0, str.length - 2) + " на " + time}`;
+    getTitle(array, time) {
+      let str = "";
+      array.map((elem) => (str = str + elem.service + ", "));
+      return `"${str.substring(0, str.length - 2)}"` + " на " + time;
     },
     getElemById(array, id) {
       return array.find((el) => Number(el.id) === Number(id));

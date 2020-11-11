@@ -1,48 +1,23 @@
-import Api from "../Api";
-
 export default {
   actions: {
     async actionIndex(ctx) {
-      const url = "http://localhost:8080/services";
-      const token = JSON.parse(window.localStorage.getItem("token"));
-      let promise = await new Api(token).fetch(url);
-      if (!Array.isArray(promise)) {
-        alert(promise.reason);
-        promise = [];
-        ctx.commit("setServices", promise);
-      }
-      ctx.commit("setServices", promise);
+      const url = "/services";
+      const response = await this.$api.actionIndex(url);
+      ctx.commit("setServices", response);
     },
     async updateAction(ctx, item) {
-      const url = `http://localhost:8080/services/${item.id}`;
-      const token = JSON.parse(window.localStorage.getItem("token"));
-      const params = {
-        method: "PUT",
-        body: JSON.stringify(item),
-        headers: { "Content-Type": "application/json" },
-      };
-      const promise = await new Api(token).fetch(url, params);
-      ctx.commit("updateService", promise);
+      const url = `/services/${item.id}`;
+      const response = await this.$api.actionUpdate(url, params);
+      ctx.commit("updateService", response);
     },
     async createAction(ctx, item) {
-      const token = JSON.parse(window.localStorage.getItem("token"));
-      const params = {
-        method: "POST",
-        body: JSON.stringify(item),
-        headers: { "Content-Type": "application/json" },
-      };
-      const url = "http://localhost:8080/services";
-      const promise = await new Api(token).fetch(url, params);
+      const url = "/services";
+      const response = await this.$api.actionCreate(url, params);
       ctx.commit("createService", promise);
     },
     async deleteAction(ctx, id) {
-      const token = JSON.parse(window.localStorage.getItem("token"));
-      const params = {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-      };
-      const url = `http://localhost:8080/services/${id}`;
-      await new Api(token).fetch(url, params);
+      const url = `/services/${id}`;
+      await this.$api.actionDelete(url);
       ctx.commit("deleteService", id);
     },
   },

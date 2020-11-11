@@ -13,32 +13,34 @@ class RecordController extends BaseController {
     "start_record",
     "end_record",
   ];
-  /* static async actionIndex(request, response) {
-    const data = await this.modelClass.findAll({ attributes: this.fields });
-    const records = await data.getServices();
-    console.log(records);
-  } */
-  static async actionCreate(request, response) {
-    const records = await this.modelClass.create(request.body);
-    const services = await Service.findAll({
-      where: {
-        id: {
-          [Op.or]: request.body.services_id,
-        },
-      },
-    });
-    await records.addService(services);
-    const record = await this.modelClass.findOne({ where: { id: records.id } });
-    const preServiceList = await record.getServices();
-    const serviceList = {
-      strServices: "",
-      idArrServices: [],
-    };
-    for (let i = 0; i < preServiceList.length; i++) {
-      serviceList.strServices += preServiceList[i].service + ", ";
-      serviceList.idArrServices.push(preServiceList[i].id);
+  static async actionIndex(request, response) {
+    try {
+      const data = await this.modelClass.findAll({ include: Service });
+      response.status(200).json(data);
+    } catch (error) {
+      response.status(400).json(error);
     }
-    response.json({ ...records.dataValues, ...serviceList });
+  }
+  static async actionCreate(request, response) {
+    try {
+      const records = await this.modelClass.create(request.body);
+      const services = await Service.findAll({
+        where: {
+          id: {
+            [Op.or]: request.body.services_id,
+          },
+        },
+      });
+      await records.addService(services);
+
+      const record = await this.modelClass.findOne({
+        where: { id: records.id },
+        include: Service,
+      });
+      response.status(200).json(record);
+    } catch (error) {
+      response.status(400).json(error);
+    }
   }
 }
 module.exports = RecordController;

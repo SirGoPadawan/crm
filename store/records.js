@@ -1,48 +1,23 @@
-import Api from "../Api";
-
 export default {
   actions: {
     async actionIndex(ctx) {
-      const url = "http://localhost:8080/records";
-      const token = JSON.parse(window.localStorage.getItem("token"));
-      let promise = await new Api(token).fetch(url);
-      console.log(promise);
-      if (!Array.isArray(promise)) {
-        alert(promise.reason);
-        promise = [];
-        ctx.commit("setRecords", promise);
-      }
-      ctx.commit("setRecords", promise);
+      const url = "/records";
+      const response = await this.$api.actionIndex(url);
+      ctx.commit("setRecords", response);
     },
     async updateAction(ctx, item) {
-      const url = `http://localhost:8080/records/${item.id}`;
-      const token = JSON.parse(window.localStorage.getItem("token"));
-      const params = {
-        method: "PUT",
-        body: JSON.stringify(item),
-        headers: { "Content-Type": "application/json" },
-      };
-      const promise = await new Api(token).fetch(url, params);
-      ctx.commit("updateRecords", promise);
+      const url = `/records/${item.id}`;
+      const response = await this.$api.actionUpdate(url, item);
+      ctx.commit("updateRecords", response);
     },
     async createAction(ctx, item) {
-      const params = {
-        method: "POST",
-        body: JSON.stringify(item),
-        headers: { "Content-Type": "application/json" },
-      };
-      const url = "http://localhost:8080/records";
-      const promise = await this.$Api.fetch(url, params);
-      ctx.commit("createRecords", promise);
+      const url = "/records";
+      const response = await this.$api.actionCreate(url, item);
+      ctx.commit("createRecords", response);
     },
     async deleteAction(ctx, id) {
-      const token = JSON.parse(window.localStorage.getItem("token"));
-      const params = {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-      };
-      const url = `http://localhost:8080/records/${id}`;
-      await new Api(token).fetch(url, params);
+      const url = `/records/${id}`;
+      await this.$api.actionDelete(url);
       ctx.commit("deleteRecords", id);
     },
   },
@@ -50,18 +25,18 @@ export default {
     records: [],
   }),
   mutations: {
-    setRecords(state, promise) {
-      state.records = promise;
+    setRecords(state, response) {
+      state.records = response;
     },
-    updateRecords(state, promise) {
+    updateRecords(state, response) {
       let id = state.records.findIndex(
-        (elem) => Number(elem.id) === Number(promise[0].id)
+        (elem) => Number(elem.id) === Number(response[0].id)
       );
       state.records.splice(id, 1);
-      state.records.push(promise[0]);
+      state.records.push(response[0]);
     },
-    createRecords(state, promise) {
-      state.records.push(promise);
+    createRecords(state, response) {
+      state.records.push(response);
       console.log(state.records);
     },
     deleteRecords(state, id) {
