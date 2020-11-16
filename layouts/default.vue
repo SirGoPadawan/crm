@@ -1,6 +1,14 @@
 <template>
   <v-app id="inspire" class="overflow-hidden" style="position: relative">
-    <v-header :setDrawer="setDrawer" />
+    <v-app-bar
+      color="amber darken-3"
+      elevate-on-scroll
+      scroll-target="#scrolling-techniques-7"
+      max-height="64px"
+    >
+      <v-app-bar-nav-icon @click.stop="setDrawer()"></v-app-bar-nav-icon>
+      <v-spacer></v-spacer>
+    </v-app-bar>
     <v-main fluid>
       <v-nav-bar :drawer="drawer" />
       <v-container>
@@ -13,11 +21,10 @@
 export default {
   data() {
     return {
-      drawer: null,
+      drawer: false,
     };
   },
   components: {
-    "v-header": () => import("../components/VHeader"),
     "v-nav-bar": () => import("../components/VNavBar"),
   },
   methods: {

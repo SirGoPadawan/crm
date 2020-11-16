@@ -57,7 +57,6 @@
           </v-dialog>
         </v-toolbar>
       </template>
-      -->
       <template v-slot:[`item.actions`]="{ item }">
         <v-icon small class="mr-2" @click="goToUser(item)">
           mdi-pencil

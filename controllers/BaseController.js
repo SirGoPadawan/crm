@@ -4,7 +4,7 @@ class BaseController {
   static async actionIndex(request, response) {
     try {
       const data = await this.modelClass.findAll({ attributes: this.fields });
-      response.json(200).json(data);
+      response.status(200).json(data);
     } catch (error) {
       response.status(400).json(error);
     }

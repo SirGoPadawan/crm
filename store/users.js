@@ -3,6 +3,7 @@ export default {
     async actionIndex(ctx) {
       const url = "/users";
       const response = await this.$api.actionIndex(url);
+      console.log(response);
       ctx.commit("setUsers", response);
     },
     async createAction(ctx, item) {
@@ -10,7 +11,6 @@ export default {
       const response = await this.$api.actionCreate(url, item);
       ctx.commit("createUser", response);
     },
-
     async updateAction(ctx, item) {
       const url = `/users/${item.id}`;
       const response = await this.$api.actionUpdate(url, params);
@@ -59,18 +59,18 @@ export default {
     users: [],
   }),
   mutations: {
-    setUsers(state, res) {
-      state.users = res;
+    setUsers(state, response) {
+      state.users = response;
     },
-    createUser(state, promise) {
-      state.users.push(promise);
+    createUser(state, response) {
+      state.users.push(response);
     },
-    updateUser(state, promise) {
+    updateUser(state, response) {
       const index = state.users.findIndex(
-        (elem) => Number(elem.id) === Number(promise[0].id)
+        (elem) => Number(elem.id) === Number(response[0].id)
       );
       state.users.splice(index, 1);
-      state.users.push(promise);
+      state.users.push(response);
     },
     deleteUser(state, id) {
       const index = state.users.findIndex(
