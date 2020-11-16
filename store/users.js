@@ -14,7 +14,7 @@ export default {
     async updateAction(ctx, item) {
       const url = `/users/${item.id}`;
       const response = await this.$api.actionUpdate(url, params);
-      ctx.commit("updateUser", promise);
+      ctx.commit("updateUser", response);
     },
     async deleteAction(ctx, id) {
       const url = `/users/${id}`;
@@ -30,10 +30,33 @@ export default {
       const response = await this.$api.fetch(url, params);
       ctx.commit("updateUser", response);
     },
+    async registrationAction(ctx, user) {
+      const url = "http://localhost:8080/users/registration";
+      const params = {
+        method: "POST",
+        body: JSON.stringify(user),
+        headers: { "Content-Type": "application/json" },
+      };
+      const response = await this.$api.fetch(url, params);
+      console.log(response);
+    },
+    async actionLogin(ctx, user) {
+      const params = {
+        method: "POST",
+        body: JSON.stringify(user),
+        headers: { "Content-Type": "application/json" },
+      };
+      const url = "http://localhost:8080/users/login";
+      const response = await this.$api.fetch(url, params);
+      localStorage.setItem("token", JSON.stringify(response.token));
+      localStorage.setItem(
+        "refreshToken",
+        JSON.stringify(response.refreshToken)
+      );
+    },
   },
   state: () => ({
     users: [],
-    errMessage: "",
   }),
   mutations: {
     setUsers(state, res) {

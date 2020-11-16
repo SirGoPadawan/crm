@@ -1,7 +1,7 @@
-const express = require("express");
-const router = express.Router();
-const multer = require("multer");
 const UserController = require("../controllers/UserController");
+
+const router = require("express").Router();
+const multer = require("multer");
 
 const storage = multer.diskStorage({
   destination: function(req, files, cb) {
@@ -19,9 +19,13 @@ router
   .get("/", (req, res) => UserController.actionIndex(req, res))
   .delete("/:id", (req, res) => UserController.actionDelete(req, res))
   .put("/:id", (req, res) => UserController.actionUpdate(req, res))
+  .post("/", (req, res) => UserController.actionCreate(req, res))
   .post("/:id/uploadimg", upload.any(), (req, res) =>
     UserController.actionUpdateImg(req, res)
   )
-  .post("/", (req, res) => UserController.actionCreate(req, res));
+  .post("/registration", (req, res) =>
+    UserController.actionRegistration(req, res)
+  )
+  .post("/login", (req, res) => UserController.actionLogin(req, res));
 
 module.exports = router;

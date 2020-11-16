@@ -1,3 +1,4 @@
+const dayjs = require("dayjs");
 const BaseModel = require("./BaseModel");
 
 class User extends BaseModel {
@@ -34,6 +35,12 @@ class User extends BaseModel {
       refresh_token: {
         type: DataTypes.STRING,
         unique: true,
+      },
+      birthday: {
+        type: DataTypes.DATE,
+        set(value) {
+          this.setDataValue("birthday", dayjs(value).format("YYYY-MM-DD"));
+        },
       },
     };
   }

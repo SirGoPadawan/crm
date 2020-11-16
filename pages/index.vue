@@ -55,13 +55,13 @@ export default {
     },
   },
   methods: {
-    ...mapActions({ reg: "login/reg" }),
+    ...mapActions({ actionLogin: "users/actionLogin" }),
     singIn() {
-      const user = JSON.stringify({
+      const user = {
         phone: this.phone,
         password: this.password,
-      });
-      this.reg(user);
+      };
+      this.actionLogin(user);
     },
   },
 };

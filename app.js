@@ -7,10 +7,8 @@ const jwt = require("jsonwebtoken");
 const Sentry = require("@sentry/node");
 const Tracing = require("@sentry/tracing");
 
-const registrationRouter = require("./routes/registration");
 const usersRouter = require("./routes/users");
 const servicesRouter = require("./routes/services");
-const loginRouter = require("./routes/login");
 const citiesRouter = require("./routes/cities");
 const companiesRouter = require("./routes/companies");
 const branchesRouter = require("./routes/branches");
@@ -41,7 +39,12 @@ app.use(function onError(err, req, res, next) {
   res.end(res.sentry + "\n");
 });
 
-const publicPaths = ["/", "/registration", "/login", "/refreshToken"];
+const publicPaths = [
+  "/",
+  "/users/registration",
+  "/users/login",
+  "/users/refreshToken",
+];
 
 app.use((req, res, next) => {
   let value = publicPaths.includes(req.path);
@@ -55,9 +58,7 @@ app.use((req, res, next) => {
             res.status(403).json({ reason: "Невалидный токен" });
           }
           default: {
-            res
-              .status(403)
-              .json({ reason: "случилась какая то хуита", ...err.message });
+            res.status(403).json({ reason: "случилось что то", ...err });
           }
         }
       } else if (decoded) {
@@ -72,10 +73,8 @@ app.use(helmet());
 
 app.disable("x-powered-by");
 
-app.use("/registration", registrationRouter);
 app.use("/users", usersRouter);
 app.use("/services", servicesRouter);
-app.use("/login", loginRouter);
 app.use("/cities", citiesRouter);
 app.use("/companies", companiesRouter);
 app.use("/branches", branchesRouter);

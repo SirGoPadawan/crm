@@ -6,38 +6,56 @@
       :rules="[rules.required]"
       label="Имя"
       type="text"
-    ></v-text-field>
+    />
     <v-text-field
       v-model="last_name"
       :rules="[rules.required]"
       label="Фамилия"
       type="text"
-    ></v-text-field>
+    />
     <v-text-field
       v-model="patronymic"
       :rules="[rules.required]"
       label="Отчество"
       type="text"
-    ></v-text-field>
+    />
     <v-text-field
       v-model="email"
       :rules="[rules.required]"
       label="E-mail"
       type="email"
-    ></v-text-field>
+    />
     <v-text-field
       v-model="phone"
       :rules="[rules.required]"
       label="Телефон"
       type="tel"
-    ></v-text-field>
+    />
     <v-text-field
       :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
       v-model="password"
       :rules="[rules.required, rules.minPassSymb]"
       label="Пароль"
       :type="show ? 'text' : 'password'"
-    ></v-text-field>
+    />
+    <v-dialog v-model="dialog" width="400">
+      <template v-slot:activator="{ on }">
+        <v-text-field v-on="on" label="Дата рождения" v-model="birthday" />
+      </template>
+      <v-card>
+        <v-date-picker
+          header-color="black"
+          v-model="birthday"
+          locale="ru"
+          class="mt-5"
+        />
+        <v-spacer />
+        <div class="mb-5">
+          <v-btn @click="closeDate()">Закрыть</v-btn>
+          <v-btn @click="dialog = false">Сохранить</v-btn>
+        </div>
+      </v-card>
+    </v-dialog>
     <v-btn
       class="mb-3"
       color="primary"
@@ -53,11 +71,13 @@
 </template>
 <script>
 import { mapActions } from "vuex";
+import dayjs from "dayjs";
 
 export default {
   layout: "noAuth",
   data() {
     return {
+      dialog: false,
       show: false,
       first_name: "",
       last_name: "",
@@ -65,6 +85,10 @@ export default {
       email: "",
       phone: "",
       password: "",
+      birthday: null,
+      minLengthPass: 8,
+      minLengthPhone: 11,
+      defaultDate: dayjs().format("YYYY-MM-DD"),
       rules: {
         required: (value) => !!value || "Обязательно для заполнения",
         minPassSymb: (v) =>
@@ -74,29 +98,34 @@ export default {
   },
   computed: {
     disabledSingUp() {
-      //@todo магические числа типо 11 и 8 и прочей хуиты должны быть в своих константах... Чтобы птом 1) не гадать что за 11 нахуй.. 2) чтобы можнобыло поменять в 1-м месте и всё
       return !(
         this.first_name &&
         this.last_name &&
         this.patronymic &&
         this.email &&
-        this.phone.length >= 11 &&
-        this.password.length >= 8
+        this.phone.length >= this.minLengthPhone &&
+        this.password.length >= this.minLengthPass &&
+        this.birthday
       );
     },
   },
   methods: {
-    ...mapActions({ setUser: "registration/setUser" }),
+    ...mapActions({ registrationAction: "users/registrationAction" }),
     regUser() {
-      const user = JSON.stringify({
+      const user = {
         first_name: this.first_name,
         last_name: this.last_name,
         patronymic: this.patronymic,
         email: this.email,
         phone: this.phone,
         password: this.password,
-      });
-      this.setUser(user);
+        birthday: this.birthday,
+      };
+      this.registrationAction(user);
+    },
+    closeDate() {
+      this.birthday = null;
+      this.dialog = false;
     },
   },
 };

@@ -1,5 +1,3 @@
-const dayjs = require("dayjs");
-
 class BaseController {
   static modelClass = null;
   static fields = [];
@@ -13,8 +11,13 @@ class BaseController {
   }
   static async actionCreate(request, response) {
     try {
-      const newItem = await this.modelClass.create(request.body);
-      response.status(200).json(newItem);
+      const data = await this.modelClass.findOne({
+        where: { id: request.body.id },
+      });
+      if (!data) {
+        const newItem = await this.modelClass.create(request.body);
+        response.status(200).json(newItem);
+      } else throw new Error();
     } catch (error) {
       response.status(400).json(error);
     }

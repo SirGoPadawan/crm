@@ -65,7 +65,7 @@ class Api {
         throw new Error();
       }
     } catch (error) {
-      alert(error.message);
+      alert(error);
       return [];
     }
   }
