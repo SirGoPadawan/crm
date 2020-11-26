@@ -20,7 +20,7 @@ const tokenKey = config.jwt.tokenKey;
 const app = express();
 
 app.use(cors());
-
+// @todo вынести в переменные окружения параметриы типо dsn / токены и тд
 Sentry.init({
   dsn:
     "https://bfc349415809431681f553a2836417e5@o467953.ingest.sentry.io/5495199",

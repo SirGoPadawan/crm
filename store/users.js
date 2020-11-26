@@ -22,7 +22,7 @@ export default {
       ctx.commit("deleteUser", id);
     },
     async uploadImg(ctx, { img, id }) {
-      const url = `http://localhost:8080/users/${id}/uploadimg`;
+      const url = `/users/${id}/uploadimg`;
       const params = {
         method: "POST",
         body: img,
@@ -31,7 +31,7 @@ export default {
       ctx.commit("updateUser", response);
     },
     async registrationAction(ctx, user) {
-      const url = "http://localhost:8080/users/registration";
+      const url = "/users/registration";
       const params = {
         method: "POST",
         body: JSON.stringify(user),
@@ -46,7 +46,7 @@ export default {
         body: JSON.stringify(user),
         headers: { "Content-Type": "application/json" },
       };
-      const url = "http://localhost:8080/users/login";
+      const url = "/users/login";
       const response = await this.$api.fetch(url, params);
       localStorage.setItem("token", JSON.stringify(response.token));
       localStorage.setItem(

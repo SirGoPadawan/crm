@@ -1,11 +1,6 @@
 <template>
   <v-card>
-    <v-data-table
-      :headers="headers"
-      :items="users"
-      :no-data-text="errMessage"
-      class="elevation-1"
-    >
+    <v-data-table :headers="headers" :items="users" class="elevation-1">
       <template v-slot:top>
         <v-toolbar flat>
           <v-toolbar-title> Пользователи </v-toolbar-title>
@@ -124,6 +119,7 @@ export default {
         this.editedItem = { ...this.defaultItem };
         this.editedIndex = -1;
       });
+      console.log(this.city);
     },
     save() {
       this.createAction(this.editedItem);
@@ -133,7 +129,7 @@ export default {
   computed: {
     ...mapState({
       users: (state) => state.users.users,
-      errMessage: (state) => state.users.errMessage,
+      city: (state) => state.conf.city,
     }),
   },
   mounted() {

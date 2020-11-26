@@ -25,18 +25,18 @@ export default {
     branches: [],
   }),
   mutations: {
-    setBranches(state, res) {
-      state.branches = res;
+    setBranches(state, response) {
+      state.branches = response;
     },
-    updateBranches(state, promise) {
+    updateBranches(state, response) {
       let id = state.branches.findIndex(
-        (elem) => Number(elem.id) === Number(promise[0].id)
+        (elem) => Number(elem.id) === Number(response[0].id)
       );
       state.branches.splice(id, 1);
-      state.branches.push(promise[0]);
+      state.branches.push(response[0]);
     },
-    createBranches(state, promise) {
-      state.branches.push(promise);
+    createBranches(state, response) {
+      state.branches.push(response);
     },
     deleteBranches(state, id) {
       const index = state.branches.findIndex(
