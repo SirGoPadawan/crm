@@ -3,11 +3,8 @@ import jwt from "jsonwebtoken";
 class Api {
   constructor(token = null) {
     this.token = token;
-    console.log(this.token);
     try {
-      if (!this.token || this.token === undefined) {
-        console.log(this.token);
-        this.getNewToken();
+      if (!this.token) {
         throw new Error();
       }
       const decode = jwt.decode(this.token);
@@ -24,19 +21,21 @@ class Api {
   async getNewToken() {
     try {
       let refreshToken = JSON.parse(localStorage.getItem("refreshToken"));
-      console.log(refreshToken);
-      /* if (refreshToken || refreshToken === "undefined") {
+      console.log(typeof refreshToken);
+      if (!!refreshToken) {
         localStorage.clear();
         throw new Error();
-      } */
+      }
       const res = await fetch("http://localhost:8080/refreshToken", {
         method: "POST",
         headers: { authorization: refreshToken },
       });
       const data = await res.json();
-      this.token = data.token;
-      localStorage.setItem("token", JSON.stringify(data.token));
-      localStorage.setItem("refreshToken", JSON.stringify(data.refreshToken));
+      if (data.status === 200) {
+        this.token = data.token;
+        localStorage.setItem("token", JSON.stringify(data.token));
+        localStorage.setItem("refreshToken", JSON.stringify(data.refreshToken));
+      } else throw new Error();
     } catch (error) {
       console.log(error);
     }

@@ -7,7 +7,7 @@ export default {
     },
     async updateAction(ctx, item) {
       const url = `/companies/${item.id}`;
-      const response = await this.$api.actionUpdate(url, params);
+      const response = await this.$api.actionUpdate(url, item);
       ctx.commit("updateCompanies", response);
     },
     async createAction(ctx, item) {

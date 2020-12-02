@@ -37,7 +37,6 @@ export default {
     },
     createRecords(state, response) {
       state.records.push(response);
-      console.log(state.records);
     },
     deleteRecords(state, id) {
       const index = state.records.findIndex(

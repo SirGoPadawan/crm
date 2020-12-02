@@ -49,7 +49,13 @@ export default {
             { title: "Компании", link: "/companies" },
           ],
         },
-        { title: "Календарь" },
+        {
+          title: "Календарь",
+          sublist: [
+            { title: "Календарь записей", link: "/calendar" },
+            { title: "График работы", link: "/schedule" },
+          ],
+        },
         {
           title: "Администрирование",
           sublist: [{ title: "Разрешения" }],

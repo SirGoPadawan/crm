@@ -10,8 +10,8 @@
             mdi-chevron-left
           </v-icon>
         </v-btn>
-        <v-toolbar-title v-if="$refs.calendar">
-          {{ $refs.calendar.title }}
+        <v-toolbar-title>
+          {{ titleCalendar }}
         </v-toolbar-title>
         <v-btn fab text small color="amber darken-3" @click="next">
           <v-icon small>
@@ -200,6 +200,9 @@ export default {
   },
   layout: "default",
   data: () => ({
+    defaultTitle: "",
+    titleCalendar: "",
+    conutPrev: null,
     focus: "",
     timeStart: null,
     timeEnd: null,
@@ -235,7 +238,6 @@ export default {
       this.records.map((elem) => {
         const findedEmployee = this.getElemById(this.users, elem.employee_id);
         const findedClient = this.getElemById(this.users, elem.client_id);
-        console.log(findedClient);
         const details = [
           {
             label: "Клиент",
@@ -263,6 +265,8 @@ export default {
     this.actionIndex();
     this.actionGetServices();
     this.actionIndexRecords();
+    this.getTitleCalendar();
+    this.defaultTitle = this.$refs.calendar.title;
   },
   methods: {
     ...mapActions({
@@ -271,7 +275,9 @@ export default {
       actionCreateEvent: "records/createAction",
       actionIndexRecords: "records/actionIndex",
     }),
-    //вспомогательные функции
+    getTitleCalendar() {
+      this.titleCalendar = this.$refs.calendar.title;
+    },
     getTitle(array, time) {
       let str = "";
       array.map((elem) => (str = str + elem.service + ", "));
@@ -293,7 +299,6 @@ export default {
     viewDay({ date }) {
       this.focus = date;
     },
-    //закончились вспомогательные функции
     createEvent(event) {
       this.isOpenNewRecord = !this.isOpenNewRecord;
       const name = event.category.split(" ");
@@ -310,6 +315,14 @@ export default {
     },
     setToday() {
       this.focus = "";
+      if (this.countPrev < 0) {
+        this.countPrev = Math.abs(this.countPrev);
+        this.$refs.calendar.next(this.countPrev);
+      } else if (this.countPrev > 0) {
+        this.$refs.calendar.prev(this.countPrev);
+      }
+      this.countPrev = null;
+      this.titleCalendar = this.defaultTitle;
     },
     saveEvent() {
       const timeArr = this.timeStart.split(":");
@@ -331,19 +344,20 @@ export default {
       this.newRecord = {};
     },
     prev() {
+      this.conutPrev++;
       this.$refs.calendar.prev();
+      this.getTitleCalendar();
     },
     next() {
+      this.conutPrev++;
       this.$refs.calendar.next();
+      this.getTitleCalendar();
     },
     showEvent({ nativeEvent, event }) {
-      const open = () => {
-        this.selectedRecord = event;
-        this.selectedElement = nativeEvent.target;
-        this.isOpenSelected = true;
-      };
       this.isOpenSelected = !this.isOpenSelected;
-      open();
+      this.selectedRecord = event;
+      this.selectedElement = nativeEvent.target;
+      this.isOpenSelected = true;
       nativeEvent.stopPropagation();
     },
   },

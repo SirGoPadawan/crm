@@ -119,7 +119,6 @@ export default {
         this.editedItem = { ...this.defaultItem };
         this.editedIndex = -1;
       });
-      console.log(this.city);
     },
     save() {
       this.createAction(this.editedItem);

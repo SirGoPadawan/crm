@@ -9,14 +9,14 @@
         color="amber darken-3"
         :items="items"
         v-model="city"
-        class="mt-7"
+        class="mt-7 col-2"
         solo
         @change="setCity(city)"
       />
     </v-app-bar>
     <v-main fluid>
       <v-nav-bar :drawer="drawer" />
-      <v-container>
+      <v-container class="mt-15">
         <Nuxt />
       </v-container>
     </v-main>

@@ -3,7 +3,6 @@ export default {
     async actionIndex(ctx) {
       const url = "/users";
       const response = await this.$api.actionIndex(url);
-      console.log(response);
       ctx.commit("setUsers", response);
     },
     async createAction(ctx, item) {
@@ -37,8 +36,7 @@ export default {
         body: JSON.stringify(user),
         headers: { "Content-Type": "application/json" },
       };
-      const response = await this.$api.fetch(url, params);
-      console.log(response);
+      await this.$api.fetch(url, params);
     },
     async actionLogin(ctx, user) {
       const params = {
