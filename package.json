@@ -1,8 +1,8 @@
 {
   "name": "crm",
   "scripts": {
-    "serv": "node ./bin/www",
-    "dev": "nuxt",
+    "serv": "nodemon ./bin/www",
+    "dev": "nuxt ",
     "build": "nuxt build",
     "generate": "nuxt generate",
     "start": "nuxt start"
@@ -35,6 +35,7 @@
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1",
+    "nodemon": "^2.0.6",
     "pug": "2.0.0-beta11"
   }
 }
