@@ -81,7 +81,7 @@ app.use("/records", recordsRouter);
 app.use("/refreshToken", refreshTokenRouter);
 
 app.listen(app.get("port"), () => {
-  console.log("CORS-enabled web server listening on port 8080");
+  console.log("CORS-enabled web server listening on port 8000");
 });
 
 module.exports = app;
