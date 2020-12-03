@@ -12,4 +12,7 @@ export default {
     link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
   },
   plugins: [{ src: "~/plugins/api.js", mode: "client" }],
+  serverMiddleware: {
+    "/api": "~/api",
+  },
 };
