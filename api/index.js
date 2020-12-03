@@ -16,14 +16,13 @@ const recordsRouter = require("./routes/records");
 const refreshTokenRouter = require("./routes/refreshToken");
 
 const tokenKey = config.jwt.tokenKey;
+const dsn = config.dsn;
 
 const app = express();
 
 app.use(cors());
-// @todo вынести в переменные окружения параметриы типо dsn / токены и тд
 Sentry.init({
-  dsn:
-    "https://bfc349415809431681f553a2836417e5@o467953.ingest.sentry.io/5495199",
+  dsn: dsn,
   integrations: [
     new Sentry.Integrations.Http({ tracing: true }),
     new Tracing.Integrations.Express({ app }),
